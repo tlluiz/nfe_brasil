@@ -3,10 +3,118 @@ require 'nokogiri'
 module	NfeBrasil
 	class NfeBuilder
 		DATA = {
+			identificacao: {
+				nNF: ''
+			},
+			emitente: {
+				cnpj: '',
+				razaoSocial: '',
+				nomeFantasia: '',
+				endereco: {
+					logradouro: '',
+					numero: '',
+					complemento: '',
+					bairro: '',
+					codigoMunicipio: '',
+					municipio: '',
+					codigoUF: '',
+					uf: '',
+					cep: '',
+					codigoPais: '',
+					pais: '',
+					fone: ''
+				},
+				ie: '',
+				crt: ''
+			},
+			destinatario: {
+				cnpj: '',
+				cpf: '',
+				razaoSocial: '',
+				endereco: {
+					logradouro: '',
+					numero: '',
+					complemento: '',
+					bairro: '',
+					codigoMunicipio: '',
+					municipio: '',
+					uf: '',
+					cep: '',
+					codigoPais: '',
+					pais: '',
+					fone: ''
+				},
+				ie: '',
+				inscricaoSuframa: '',
+				email: ''
+			},
+			entrega: {
+				cnpj: '',
+				cpf: '',
+				logradouro: '',
+				numero: '',
+				complemento: '',
+				bairro: '',
+				codigoMunicipio: '',
+				municipio: '',
+				uf: ''
+			},
+			detalhes: {
 
+			},
+			total: {
+				ICMSTot: {
+					vBC: '',
+					vICMS: '',
+					vBCST: '',
+					vST: '',
+					vProd: '',
+					vFrete: '',
+					vSeg: '',
+					vDesc: '',
+					vII: '',
+					vIPI: '',
+					vPIS: '',
+					vCOFINS: '',
+					vOutro: '',
+					vNF: ''
+				}
+			},
+			transporte: {
+				modFrete: '',
+				transporta: {
+					cnpj: '',
+					cpf: '',
+					razaoSocial: '',
+					ie: '',
+					endereco: '',
+					municipio: '',
+					uf: ''
+				},
+				volumes: {
+					quantidade: '',
+					especie: '',
+					pesoLiquido: '',
+					pesoBruto: ''
+				}
+			},
+			cobranca: {
+				fatura: {
+					nFat: '',
+					vOrig: '',
+					vDesc: '',
+					vLiq: ''
+				}
+			},
+			infoAdicional: {
+				infAdFisco: '',
+				infCpl: ''
+			}
 		}
+
 		def initialize(data)
 			@data = DATA.merge(data)
+			access_key_generate
 			@builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
 				xml.NFe(xmlns: "http://www.portalfiscal.inf.br/nfe") {
 					xml.infNFe( versao: "2.00", Id: "NFe" ) { #preencher Id com a chave de acesso da nota fiscal precida do literal NFe.
@@ -72,116 +180,114 @@ module	NfeBrasil
 
 		def add_emit(xml)
 			xml.emit { #inofrmações do Emitente da nota fiscal
-				xml.CNPJ "01999999000199" #CNPJ da empresa emissora da NF.
-				xml.xNome "Razão social LTDA" #Razão social da Empresa Emissora.
-				xml.xFant "Nome Fantasia" #Noma fantasia da empresa emissora da NF.
-				xml.enderEmit { #Informações do endereço do emitente
-					xml.xLgr "Rua Das couves"
-					xml.nro "123"
-					xml.xCpl "Fundos" #Complemento - Remover nó caso não tenha complemento.
-					xml.xBairro "Jardim das Hortaliças" #bairro.
-					xml.cMun "3549805" #Código do Município.
-					xml.xMun "Saao José do Rio Preto" #Nome do Município.
-					xml.UF "SP" #Sigla do Estado do Emitente.
-					xml.CEP "15000000" #CEP do Emitente.
-					xml.cPais "1058" #Código do País. Veja tabel BACEN - 1058 é Brasil.
-					xml.xPais "Brasil" #Nome do País.
-					xml.fone "1732323232" #Telefone do emitente.
+				xml.CNPJ @data[:emitente][:cnpj]
+				xml.xNome @data[:emitente][:razaoSocial]
+				xml.xFant @data[:emitente][:nomeFantasia]
+				xml.enderEmit {
+					xml.xLgr @data[:emitente][:endereco][:logradouro]
+					xml.nro @data[:emitente][:endereco][:numero]
+					xml.xCpl @data[:emitente][:endereco][:complemento]
+					xml.xBairro @data[:emitente][:endereco][:bairro]
+					xml.cMun @data[:emitente][:endereco][:codigoMunicipio]
+					xml.xMun @data[:emitente][:endereco][:municipio]
+					xml.UF @data[:emitente][:endereco][:uf]
+					xml.CEP @data[:emitente][:endereco][:cep]
+					xml.cPais @data[:emitente][:endereco][:codigoPais]
+					xml.xPais @data[:emitente][:endereco][:pais]
+					xml.fone @data[:emitente][:endereco][:fone]
 				}
-				xml.IE "ISENTO" #Incrição Estadual. Usar o literal 'ISENTO' apenas para contribuintes que são isentos do pagamento de ICMS e estão emitindo nota fiscal avulsa.
-				# xml.IEST "" #Informar a IE do substituto tributário (ST) da UF de destino da mercadoria, quando houver a retenção de ICMS ST para a UF de destino
-				xml.IM "0101" #Incrição Municipal - Deve ser informado quando houver emissão de nota fiscal conjugada, com prestação de serviços sujeitos a ISSQN e fornecimento de mercadorias sujeitos ao ICMS.
-				xml.CNAE "1234567" #CNAE Fiscal - Este campo deve ser informado quando a Incrição Municipal for informada.
-				xml.CRT "1" #Código do Regime Tributário - Este campo deve ser preenchido obrigatoriamente com: 1 - Simples Nacional, 2 - Simples Nacional (Excesso de sublimite de receita bruta), 3 - Regime Normal (v2.0)
+				xml.IE @data[:emitente][:ie]
+				xml.CRT @data[:emitente][:crt]
 			}
 		end
 
 		def add_dest(xml)
 			xml.dest { #Informações do destinatário da NF eletrônica.
 				#Escolha entre os dois nós a seguir.
-				xml.CNPJ "12345678000199" #CNPJ do Destinatário da Nota Fiscal.
-				# xml.CPF "12345678999" #CPF do destinarário - Este campo deve ser usado caso seja pessoa física o destinatário.
-				xml.xNome "Razão Social o Nome do Destinatário" #Razão Social o Nome do Destinatário.
-				xml.enderDest { #Informações do endereço do Destinatário 
-					xml.xLgr "Rua Couves Segunda"
-					xml.nro "1234"
-					xml.xCpl "Fundos"
-					xml.xBairro "Jardim das Hortaliças"
-					xml.cMun "3549805" #Verificar o códifo do município na tabela do IBGE.
-					xml.xMun "Horta" #Nome do Município.
-					xml.UF "SP" #Sigla do Estado - Colocar 'EX' caso seja enviado para fora do brasil.
-					xml.CEP "15000000" #CEP do destinatário.
-					xml.cPais "1058" #Usar tabela do BACEN.
-					xml.xPais "Brasil" #Nome do País.
-					xml.fone "1732323232" #Preencher com código DDD + número de telefone. Nas operação com o exterior é permitido informar o código do país.
+				@data[:destinatario][:cnpj] != '' ? (xml.CNPJ @data[:destinatario][:cnpj]) : (xml.CPF @data[:destinatario][:cpf])
+				xml.xNome @data[:destinatario][:razaoSocial]
+				xml.enderDest {
+					xml.xLgr @data[:destinatario][:endereco][:logradouro]
+					xml.nro @data[:destinatario][:endereco][:numero]
+					xml.xCpl @data[:destinatario][:endereco][:complemento]
+					xml.xBairro @data[:destinatario][:endereco][:bairro]
+					xml.cMun @data[:destinatario][:endereco][:codigoMunicipio]
+					xml.xMun @data[:destinatario][:endereco][:municipio]
+					xml.UF @data[:destinatario][:endereco][:uf]
+					xml.CEP @data[:destinatario][:endereco][:cep]
+					xml.cPais @data[:destinatario][:endereco][:codigoPais]
+					xml.xPais @data[:destinatario][:endereco][:pais]
+					xml.fone @data[:destinatario][:endereco][:fone]
 				}
-				xml.IE "ISENTO" #Incrição Estadual - Informar o literal 'ISENTO' quando o contribuinte for isento de contribuição de ICMS
-				# xml.ISUF "" #Incrição no SUFRAMA
-				xml.email "email@email.com" #Email do Destinatário
+				xml.IE @data[:destinatario][:ie]
+				(xml.ISUF @data[:destinatario][:inscricaoSuframa]) if @data[:destinatario][:inscricaoSuframa] != ''
+				xml.email @data[:destinatario][:email]
 			}
 		end
 
 		def add_entrega(xml)
-			xml.entrega { #Informações do endereço de entrega quando for diferente do endereço do destinatário.
-				#Escolher entre um dos dois nós abaixo.
-				xml.CNPJ "12345678000199" #CNPJ do Destinatário.
-				# xml.CPF "12345678999" #CPF do Destinatário.
-				xml.xLgr "Rua Couves Segunda"
-				xml.nro "1234"
-				xml.xCpl "Fundos"
-				xml.xBairro "Jardim das Hortaliças"
-				xml.cMun "3549805" #Verificar o códifo do município na tabela do IBGE.
-				xml.xMun "Horta" #Nome do Município - Informar 'EXTERIOR' para envio para o exterior.
-				xml.UF "SP" #Sigla do Estado - Colocar 'EX' caso seja enviado para fora do brasil.
-			}
+			if @data[:entrega][:logradouro] != ''
+				xml.entrega {
+					@data[:entrega][:cnpj] != '' ? (xml.CNPJ @data[:entrega][:cnpj]) : (xml.CPF @data[:entrega][:cpf])
+					xml.xLgr @data[:entrega][:logradouro]
+					xml.nro @data[:entrega][:numero]
+					xml.xCpl @data[:entrega][:complemento]
+					xml.xBairro @data[:entrega][:bairro]
+					xml.cMun @data[:entrega][:codigoMunicipio]
+					xml.xMun @data[:entrega][:municipio]
+					xml.UF @data[:entrega][:uf]
+				}
+			end
 		end
 
 		def add_loop_det(xml)
 			#TODO - Escrever loop para criar quantos nós de detalhamento forem necessários
-			add_det(xml)		
+			nItem = 1
+			@data[:detalhes].each_value do |item|
+				add_det(xml, item, nItem)
+				nItem += 1
+			end
 		end
 
-		def add_det(xml)
-			xml.det(nItem: "1") { #Detalhamento de produtos e serviços da NF.
-				xml.prod { #Informações sobre o produto ou serviço.
-					xml.cProd "3" #Código do Produto ou Serviço - Preencher com CFOP caso se trate de itens não relacionados a mercadoria ou produtos e que o contribuinte não possua numeração própria ex: 'CFOP9999'
+		def add_det(xml, item, nItem)
+			xml.det(nItem: nItem) {
+				xml.prod {
+					xml.cProd item[:produto][:cProd]
 					xml.cEAN
-					xml.xProd "Pé de Alface"
-					xml.NCM "07051100"
-					# xml.EXTIPI "07"
-					xml.CFOP "5102" #Código CFOP: 5102 - Venda de mercadorias adquirida ou recebida de terceiros.
-					xml.uCom "Unit" #Unidade Comercial.
-					xml.qCom "1" #Quantidade Comercial.
-					xml.vUnCom "30.00" #Valor Unitário de Comercialização - Meramente informativo.
-					xml.vProd "30.00" #Valor total dos produtos.
+					xml.xProd item[:produto][:xProd]
+					xml.NCM item[:produto][:NCM]
+					xml.CFOP item[:produto][:CFOP]
+					xml.uCom item[:produto][:uCom]
+					xml.qCom item[:produto][:qCom]
+					xml.vUnCom item[:produto][:vUnCom]
+					xml.vProd item[:produto][:vProd]
 					xml.cEANTrib
-					xml.uTrib "Unit" #Unidade Tributável.
-					xml.qTrib "1" #Quantidade tributável - informar a quantidade de tributação do produto.
-					xml.vUnTrib "0" #Valor unitário de tributação.
-					xml.indTot "1" #Indica se o campo vProd desse item compõe o valor total da nota: 0 - Não compõe, 1 - Compõe.
+					xml.uTrib item[:produto][:uTrib]
+					xml.qTrib item[:produto][:qTrib]
+					xml.vUnTrib item[:produto][:vUnTrib]
+					xml.indTot item[:produto][:indTot]
 				}
-				xml.imposto { #Informações sobre os impostos incidentes nesse produto
-					#TODO - Fazer o detalhamento dos nós de imposto de cada produto ou serviço que compõe a nota.
-					xml.ICMS { #Informações sobre o Importo sobre Circulação de Mercadoria
-						xml.ICMSSN102 { #Tributação de ICMS Isenta.
-							xml.orig "0" #Origem da Mercadoria: 0 - Nacional, 1 - Importação.
-							xml.CSOSN "400" #Tributação do ICMS: 400 - Não tributada pelo simples naciona.
+				xml.imposto {
+					xml.ICMS {
+						xml.ICMSSN102 {
+							xml.orig item[:imposto][:ICMS][:ICMSSN102][:orig]
+							xml.CSOSN item[:imposto][:ICMS][:ICMSSN102][:CSOSN]
 						}
 					}
-					xml.IPI { #Informações sobre o IPI.
-						xml.cEnq "0" #Código do Enquadramento do IPI. Informar: 0.
-						xml.IPINT { #IPI não tributado.
-							xml.CST "52" #Código da situação tributária do IPI: 52 - Saída Isenta.
+					xml.IPI {
+						xml.cEnq item[:imposto][:IPI][:cEnq]
+						xml.IPINT {
+							xml.CST item[:imposto][:IPI][:IPINT][:CST]
 						}
 					}
-					xml.PIS { #Informações sobre o PIS.
-						xml.PISNT { #PIS Não tributado.
-							xml.CST "07" #Código da situação tributária do PIS: 07 - Operação isenta da contribuição.
+					xml.PIS {
+						xml.PISNT {
+							xml.CST item[:imposto][:PIS][:PISNT][:CST]
 						}
 					}
-					xml.COFINS { #Informações sobre o COFINS.
-						xml.COFINSNT { #COFINS não tributado.
-							xml.CST "07" #Código da situação tributária do COFINS: 07 - Operação isenta da contribuição.
+					xml.COFINS {
+						xml.COFINSNT {
+							xml.CST item[:imposto][:COFINS][:COFINSNT][:CST]
 						}
 					}
 				}
@@ -192,42 +298,41 @@ module	NfeBrasil
 			#fim da repetição dos produtos ou serviços que compõe a nota fiscal.
 			xml.total { #Informações totais da NF eletrônica.
 				xml.ICMSTot { #Informações totais sobre o ICMS.
-					xml.vBC "0.00" #Valor utilizado para base de cálculo do ICMS.
-					xml.vICMS "0.00" #Valor total do ICMS.
-					xml.vBCST "0.00" #Valor utilizado para base de cálculo de ICMS com subsutuição tributária.
-					xml.vST "0.00" #Valor total do ICMS com substuição tributária.
-					xml.vProd "30.00" #Valor total de produtos e serviços.
-					xml.vFrete "0.00" #Valor do frete.
-					xml.vSeg "0.00" #Valor total do seguro.
-					xml.vDesc "0.00" #Valor total de desconto.
-					xml.vII "0.00" #Valor total do II.
-					xml.vIPI "0.00" #Valor total do IPI.
-					xml.vPIS "0.00" #Valor total do PIS.
-					xml.vCOFINS "0.00" #Valor total do COFINS.
-					xml.vOutro "0.00" #Valor com outras despesas acessórias.
-					xml.vNF "30.00" #Valor total da NF-e.
+					xml.vBC @data[:total][:ICMSTot][:vBC]
+					xml.vICMS @data[:total][:ICMSTot][:vICMS]
+					xml.vBCST @data[:total][:ICMSTot][:vBCST]
+					xml.vST @data[:total][:ICMSTot][:vST]
+					xml.vProd @data[:total][:ICMSTot][:vProd]
+					xml.vFrete @data[:total][:ICMSTot][:vFrete]
+					xml.vSeg @data[:total][:ICMSTot][:vSeg]
+					xml.vDesc @data[:total][:ICMSTot][:vDesc]
+					xml.vII @data[:total][:ICMSTot][:vII]
+					xml.vIPI @data[:total][:ICMSTot][:vIPI]
+					xml.vPIS @data[:total][:ICMSTot][:vPIS]
+					xml.vCOFINS @data[:total][:ICMSTot][:vCOFINS]
+					xml.vOutro @data[:total][:ICMSTot][:vOutro]
+					xml.vNF @data[:total][:ICMSTot][:vNF]
 				}
 			}			
 		end
 
 		def add_transp(xml)
 			xml.transp { #Informações sobre transporte.
-				xml.modFrete "0" #Modalidade do Frete: 0 - Por conta do emitente, 1 - Por conta do destinatário, 2 - Por conta de terceiro, 9 - Sem frete.
-				xml.transporta { #Informações da transportadora.
+				xml.modFrete @data[:transporte][:modFrete]
+				xml.transporta {
 					#Escolha entre um dos dois campos abaixo.
-					xml.CNPJ "12345678000101" #CNPJ da empresa transportadora.
-					# xml.CPF "" #CPF do transportador.
-					xml.xNome "Razão Social ou Nome Completo do Transportador" #Razão Social ou Nome Completo do Transportador.
-					xml.IE "123456789" #Inscrição Estadual do Transportador.
-					xml.xEnder "Rua Nove Horas, 1234, Jardim Relógio" #Endereço completo.
-					xml.xMun "Pontualidade" #Nome do município.
-					xml.UF "SP" #Sigla do estado. Deve ser informado caso o nó IE seja preenchido.
+					xml.CNPJ @data[:transporte][:transporta][:cnpj]
+					xml.xNome @data[:transporte][:transporta][:razaoSocial]
+					xml.IE @data[:transporte][:transporta][:ie]
+					xml.xEnder @data[:transporte][:transporta][:endereco]
+					xml.xMun @data[:transporte][:transporta][:municipio]
+					xml.UF @data[:transporte][:transporta][:uf]
 				}
 				xml.vol { #Informações de Volumes a serem transportados.
-					xml.qVol "1" #Quantidade de volumes.
-					xml.esp "Caixa" #Espécie de volumes transportados.
-					xml.pesoL "5.000" #Peso Líquido em Kg.
-					xml.pesoB "5.500" #Peso Bruto em Kg.
+					xml.qVol @data[:transporte][:volumes][:quantidade]
+					xml.esp @data[:transporte][:volumes][:especie]
+					xml.pesoL @data[:transporte][:volumes][:pesoLiquido]
+					xml.pesoB @data[:transporte][:volumes][:pesoBruto]
 				}
 			}
 		end
@@ -235,10 +340,10 @@ module	NfeBrasil
 		def add_cobr(xml)
 			xml.cobr { #Informações de Cobrança.
 				xml.fat { #Informações de faturamento.
-					xml.nFat "12345" #Número da Fatura.
-					xml.vOrig "30.00" #Valor Original da Fatura.
+					xml.nFat @data[:cobranca][:fatura][:nFat]
+					xml.vOrig @data[:cobranca][:fatura][:vOrig]
 					# xml.vDesc "0.00" #Valor de Desconto.
-					xml.vLiq "30.00" #Valor líquido da fatura.
+					xml.vLiq @data[:cobranca][:fatura][:vLiq]
 				}
 				# xml.dup {
 				# 	xml.nDup "" #número da duplicata.
@@ -250,9 +355,18 @@ module	NfeBrasil
 
 		def add_infAdic(xml)
 			xml.infAdic { #Informações adicionais da nota fiscal.
-				xml.infAdFisco "Olá!" #Informações adicionais de interesse do fisco.
-				xml.infCpl "Essa empresa é optante pelo Simples Nacional." #Informações adicionais de interesse do contribuinte.
+				xml.infAdFisco @data[:infoAdicional][:infAdFisco]
+				xml.infCpl @data[:infoAdicional][:infCpl]
 			}			
+		end
+
+		def access_key_generate
+			accessKeyData = {
+				cnpj: @data[:emitente][:cnpj],
+				cUF: @data[:emitente][:codigoUF],
+				nNF: @data[:identificacao][:nNF]
+			}
+			@accessKey = NfeBrasil::NfeAccessKey.new(accessKeyData)
 		end
 
 	end

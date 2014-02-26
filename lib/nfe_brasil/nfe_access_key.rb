@@ -3,13 +3,15 @@ module NfeBrasil
 	class NfeAccessKey
 		DATA = {
 			cnpj: '', #CNPJ do Emitente da Nota Fiscal Eletrônica.
-			cUF: '' #Código da Unidade Federativa do Emitente de acordo com a Tabela do IBGE.
+			cUF: '', #Código da Unidade Federativa do Emitente de acordo com a Tabela do IBGE.
 			nNf: '' #Número da Nota Fiscal.
 		}
 
 		def initialize(data)
 			@data = DATA.merge(data)
 			@accessKey = ""
+			@randomCode = ""
+			@ponderacao = ""
 			generate_access_key
 		end
 
@@ -21,9 +23,16 @@ module NfeBrasil
 			@accessKey
 		end
 
+		def randomCode
+			@randomCode
+		end
+
+		def ponderacao
+			@ponderacao
+		end
+
 		# TODO: <%= barcode '35111206276736000173550020000025001000172050', :encoding_format => Gbarcode::BARCODE_128C %>
 		def generate_access_key
-			@accessKey = String.new
 			@accessKey += @data[:cUF]
 			@accessKey += (Date.today.year - 2000).to_s
 			@accessKey += Date.today.strftime("%m")
@@ -32,8 +41,8 @@ module NfeBrasil
 			@accessKey += "001"
 			@accessKey += format("%09i", @data[:nNf])
 			@accessKey += "1"
-			@accessKey += random_code
-			ponderacao = gera_ponderacao
+			@accessKey += random_code_generate
+			ponderacao = ponderacao_generate
 			if ponderacao == 1 || ponderacao == 0
 				@accessKey += "0"
 			else
@@ -41,7 +50,7 @@ module NfeBrasil
 			end
 		end
   
-		def gera_ponderacao
+		def ponderacao_generate
 			key = @accessKey.split(//)
 			count = key.count
 			ponderacao = Array.new
@@ -59,15 +68,15 @@ module NfeBrasil
 			ponderacao.each do |p|
 				somatorio += p
 			end
-			somatorio % 11
+			@ponderacao = somatorio % 11
 		end
   
-		def random_code
+		def random_code_generate
 			code = String.new
 			8.times do
 				code += SecureRandom.random_number(10).to_s
 			end
-			code
+			@randomcode = code
 		end
 
 	end
