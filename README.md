@@ -18,7 +18,8 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+	$ certificate = NfeBrasil::Certificate.new({ssl_cert_p12_path: 'certificate/certificado.p12', ssl_cert_path: 'certificate/certificate.pem', ssl_key_path: 'certificate/key.pem', ssl_cert_pass: '1234'})
+	$ nfe = NfeBrasil::NfeBuilder.new(NfeBrasil::SampleData::DATA, certificate)
 
 ## Contributing
 

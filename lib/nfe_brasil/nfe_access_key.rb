@@ -33,7 +33,7 @@ module NfeBrasil
 
 		# TODO: <%= barcode '35111206276736000173550020000025001000172050', :encoding_format => Gbarcode::BARCODE_128C %>
 		def generate_access_key
-			@accessKey += @data[:cUF]
+			@accessKey = @data[:cUF]
 			@accessKey += (Date.today.year - 2000).to_s
 			@accessKey += Date.today.strftime("%m")
 			@accessKey += @data[:cnpj]

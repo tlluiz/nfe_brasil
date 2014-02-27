@@ -2,7 +2,7 @@ module NfeBrasil
 	class SampleData
 		DATA = {
 			identificacao: {
-				nNF: '12345'
+				nNf: '12345'
 			},
 			emitente: {
 				cnpj: '01999999000199', #CNPJ da empresa emissora da NF.
