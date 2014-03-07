@@ -18,8 +18,12 @@ Or install it yourself as:
 
 ## Usage
 
-	$ certificate = NfeBrasil::Certificate.new({ssl_cert_p12_path: 'certificate/certificado.p12', ssl_cert_path: 'certificate/certificate.pem', ssl_key_path: 'certificate/key.pem', ssl_cert_pass: '1234'})
+	$ certificate = NfeBrasil::Certificate.new ({full_certificate_path: 'certificate/certificado.p12', certificate_path: 'certificate/cert.pem', key_path: 'certificate/key.pem', certificate_password: '1234'})
 	$ nfe = NfeBrasil::NfeBuilder.new(NfeBrasil::SampleData::DATA, certificate)
+
+	$ gateway = NfeBrasil::Gateway.new({full_certificate_path: 'certificate/certificado.p12', certificate_path: 'certificate/cert.pem', key_path: 'certificate/key.pem', certificate_password: '1234'}, :homologacao)
+	$ gateway.envio_nfe(NfeBrasil::SampleData::DATA)
+	$ gateway.retorno_envio(gateway.response.numero_recibo, '2')
 
 ## Contributing
 

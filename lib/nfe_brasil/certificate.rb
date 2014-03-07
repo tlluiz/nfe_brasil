@@ -1,17 +1,32 @@
 module NfeBrasil
 	class Certificate
-		def initialize(options = {})
+		def initialize(options)
 			@options = {
-				ssl_cert_p12_path: "",
-				ssl_cert_path: "",
-				ssl_key_path: "",
-				ssl_cert_pass: "",
+				full_certificate_path: '',
+				certificate_path: '',
+				key_path: '',
+				certificate_password: ''
 			}.merge(options)
-			@certificate = OpenSSL::PKCS12.new(File.read(@options[:ssl_cert_p12_path]), @options[:ssl_cert_pass])
 		end
 
 		def PKCS12
-			@certificate
+			OpenSSL::PKCS12.new(File.read(full_certificate_path), password)
+		end
+
+		def password
+			@options[:certificate_password]
+		end
+
+		def key_path
+			@options[:key_path]
+		end
+
+		def certificate_path
+			@options[:certificate_path]
+		end
+
+		def full_certificate_path
+			@options[:full_certificate_path]
 		end
 	end
 end

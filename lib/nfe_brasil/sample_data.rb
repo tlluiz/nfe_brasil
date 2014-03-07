@@ -2,7 +2,20 @@ module NfeBrasil
 	class SampleData
 		DATA = {
 			identificacao: {
-				nNf: '12345'
+				nNf: '1',
+				naturezaOperacao: 'venda', #Natureza da Operação: venda, compra, transferência, devolução, importação, consignação, remessa
+				formaPagamento: '0', #Forma de pagamento: 0 - à vista, 1 - à prazo, 2 - outros
+				modelo: '55', #Utilizar o código 55 para identificação da NF-e, emitida em substituição ao modelo 1 ou 1A.
+				serie: '1', #Preencher com Zeros caso a NF não possuir série.
+				dataEmissao: '2014-02-01', #Data de Emissão da Nota fiscal.
+				dataSaidaEntrada: '2014-02-01', #Data de Saída ou Entrada de Mercadoria ou Produto.
+				horaSaidaEntrada: '17:24:30', #Hora de Saída da Mercadoria - Formato: HH:MM:SS.
+				tipoOperacao: '1', #Tipo de Operação: 0 - Entrada, 1 - Saída.
+				tipoImpressao: '1', #Formato de Impressão do DANFE: 1 - retrato, 2 - paisagem
+				tipoEmissao: '1', #Tipo de Emissão: 1 - Normal, 2 - Contingência FS, 3 - Contingência SCAN...
+				ambienteTransmissao: '2', #Ambiente e transmissão: 1 - Produção, 2 - Homologação
+				finalidade: '1', #Finalidade de emissão da NF-e: 1 - NFe Normal, 2 - Nfe Complementar, 3 - Nfe de ajuste
+				processoEmissao: '0' #Processo de Emissão da Nf-e: 0 - Aplicativo do Contrinuinte, 1 - Pelo fisco, 2 - Aplicativo de Fisco
 			},
 			emitente: {
 				cnpj: '01999999000199', #CNPJ da empresa emissora da NF.

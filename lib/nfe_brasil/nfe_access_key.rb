@@ -27,8 +27,8 @@ module NfeBrasil
 			@randomCode
 		end
 
-		def ponderacao
-			@ponderacao
+		def digitoVerificador
+			@digitoVerificador
 		end
 
 		# TODO: <%= barcode '35111206276736000173550020000025001000172050', :encoding_format => Gbarcode::BARCODE_128C %>
@@ -44,9 +44,11 @@ module NfeBrasil
 			@accessKey += random_code_generate
 			ponderacao = ponderacao_generate
 			if ponderacao == 1 || ponderacao == 0
-				@accessKey += "0"
+				@digitoVerificador = "0"
+				@accessKey += @digitoVerificador
 			else
-				@accessKey += (11 - ponderacao).to_s
+				@digitoVerificador = (11 - ponderacao).to_s
+				@accessKey += @digitoVerificador
 			end
 		end
   
@@ -76,7 +78,7 @@ module NfeBrasil
 			8.times do
 				code += SecureRandom.random_number(10).to_s
 			end
-			@randomcode = code
+			@randomCode = code
 		end
 
 	end

@@ -3,8 +3,10 @@ require 'nfe_brasil/nfe_builder'
 require 'nfe_brasil/nfe_access_key'
 require 'nfe_brasil/sample_data'
 require 'nfe_brasil/certificate'
-require "signer"
-require "savon"
+require 'nfe_brasil/gateway'
+require 'nfe_brasil/response'
+require 'signer'
+require 'savon'
 
 
 module NfeBrasil

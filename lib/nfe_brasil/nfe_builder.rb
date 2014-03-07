@@ -4,7 +4,20 @@ module	NfeBrasil
 	class NfeBuilder
 		DATA = {
 			identificacao: {
-				nNf: ''
+				nNf: '',
+				naturezaOperacao: '',
+				formaPagamento: '',
+				modelo: '',
+				serie: '',
+				dataEmissao: '',
+				dataSaidaEntrada: '',
+				horaSaidaEntrada: '',
+				tipoOperacao: '',
+				tipoImpressao: '',
+				tipoEmissao: '',
+				ambienteTransmissao: '',
+				finalidade: '',
+				processoEmissao: ''
 			},
 			emitente: {
 				cnpj: '',
@@ -131,51 +144,59 @@ module	NfeBrasil
 					}
 				}
 			end
-			@xml = add_signature(to_xml)
+			@xml = assinar(to_xml)
 		end
 
 		def to_xml
-			Nokogiri::XML @builder.to_xml( save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION )
+			Nokogiri::XML builder_to_xml
 		end
 
-		def xml
-			@xml
+		def builder_to_xml
+			@builder.to_xml( save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION )
 		end
 
-		def validate
-			xsd = Nokogiri::XML::Schema(File.open(File.join('XSD', 'nfe_v2.00.xsd')))
-			puts "======================"
-			puts "Mensagens de Erro"
-			puts "======================"
-			xsd.validate(Nokogiri::XML @xml).each do |error|
-				puts error.message
+		def validation
+			@xsd = Nokogiri::XML::Schema(File.open(File.join('XSD', 'nfe_v2.00.xsd')))
+			@xsd.validate(Nokogiri::XML @xml)
+		end
+
+		def validation?
+			validation == [] ? true : false
+		end
+
+		def validation_errors
+			puts "============================"
+			puts "Erros de Validação da NFe"
+			puts "============================"
+			validation.each do |error|
+				puts error
 			end
-			puts "======================"
+			puts "============================"
 		end
 
 		private
 
 		def add_ide(xml)
 			xml.ide { #Informações de identificação da Nota fiscal
-				xml.cUF "35" #Código da UF do emitente da nota fiscal. Usar tabela do IBGE. 35 - Sao Paulo
-				xml.cNF "01010101" #Código aleatório de 8 dígitos gerado pelo emitente e que comporá a chave de acesso da NF.
-				xml.natOp "venda" #Natureza da Operação: venda, compra, transferência, devolução, importação, consignação, remessa
-				xml.indPag "0" #Forma de pagamento: 0 - à vista, 1 - à prazo, 2 - outros
-				xml.mod "55" #Utilizar o código 55 para identificação da NF-e, emitida em substituição ao modelo 1 ou 1A.
-				xml.serie "1" #Preencher com Zeros caso a NF não possuir série.
-				xml.nNF "12345" #Número da Nota Fiscal.
-				xml.dEmi "2014-02-01" #Data de Emissão da Nota fiscal.
-				xml.dSaiEnt "2014-02-01" #Data de Saída ou Entrada de Mercadoria ou Produto.
-				xml.hSaiEnt "17:24:30" #Hora de Saída da Mercadoria - Formato: HH:MM:SS.
-				xml.tpNF "1" #Tipo de Operação: 0 - Entrada, 1 - Saída.
-				xml.cMunFG "3549805" #Código do Município que originou a operação - Utilize a tabela do IBGE.
-				xml.tpImp "1" #Formato de Impressão do DANFE: 1 - retrato, 2 - paisagem
-				xml.tpEmis "1" #Tipo de Emissão: 1 - Normal, 2 - Contingência FS, 3 - Contingência SCAN...
-				xml.cDV "9" #Dígito Verificador
-				xml.tpAmb "2" #Ambiente e transmissão: 1 - Produção, 2 - Homologação
-				xml.finNFe "1" #Finalidade de emissão da NF-e: 1 - NFe Normal, 2 - Nfe Complementar, 3 - Nfe de ajuste
-				xml.procEmi "0" #Processo de Emissão da Nf-e: 0 - Aplicativo do Contrinuinte, 1 - Pelo fisco, 2 - Aplicativo de Fisco
-				xml.verProc "1.0.0" #Versão do aplicativo emissor da nota fiscal.
+				xml.cUF @data[:emitente][:endereco][:codigoUF]
+				xml.cNF @accessKey.randomCode
+				xml.natOp @data[:identificacao][:naturezaOperacao]
+				xml.indPag @data[:identificacao][:formaPagamento]
+				xml.mod @data[:identificacao][:modelo]
+				xml.serie @data[:identificacao][:serie]
+				xml.nNF @data[:identificacao][:nNf]
+				xml.dEmi @data[:identificacao][:dataEmissao]
+				xml.dSaiEnt @data[:identificacao][:dataSaidaEntrada]
+				xml.hSaiEnt @data[:identificacao][:horaSaidaEntrada]
+				xml.tpNF @data[:identificacao][:tipoOperacao]
+				xml.cMunFG @data[:emitente][:endereco][:codigoMunicipio]
+				xml.tpImp @data[:identificacao][:tipoImpressao]
+				xml.tpEmis @data[:identificacao][:tipoEmissao]
+				xml.cDV @accessKey.digitoVerificador
+				xml.tpAmb @data[:identificacao][:ambienteTransmissao]
+				xml.finNFe @data[:identificacao][:finalidade]
+				xml.procEmi @data[:identificacao][:processoEmissao]
+				xml.verProc NfeBrasil::VERSION
 			}
 		end
 
@@ -361,7 +382,7 @@ module	NfeBrasil
 			}			
 		end
 
-		def add_signature(xml)
+		def assinar(xml)
 			xml = Nokogiri::XML(xml.to_s, &:noblanks)
 
 			# 1. Digest Hash for all XML
@@ -373,11 +394,6 @@ module	NfeBrasil
 			unless signature
 				signature = Nokogiri::XML::Node.new('Signature', xml)
 				signature.default_namespace = 'http://www.w3.org/2000/09/xmldsig#'
-				puts "-------------------------------"
-				puts "Problema no XML Root"
-				puts "-------------------------------"
-				puts xml
-				puts "-------------------------------"
 				xml.root().add_child(signature)
 			end
 
