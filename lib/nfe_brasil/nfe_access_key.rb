@@ -42,28 +42,28 @@ module NfeBrasil
 			@accessKey += format("%09i", @data[:nNf])
 			@accessKey += "1"
 			@accessKey += random_code_generate
-			ponderacao = ponderacao_generate
-			if ponderacao == 1 || ponderacao == 0
+			ponderacao_generate
+			if @ponderacao == 1 || @ponderacao == 0
 				@digitoVerificador = "0"
 				@accessKey += @digitoVerificador
 			else
-				@digitoVerificador = (11 - ponderacao).to_s
+				@digitoVerificador = (11 - @ponderacao).to_s
 				@accessKey += @digitoVerificador
 			end
 		end
   
 		def ponderacao_generate
 			key = @accessKey.split(//)
-			count = key.count
+			count = key.count - 1
 			ponderacao = Array.new
 			peso = 2
-			while count > 0 do
+			while count >= 0 do
 				ponderacao << key[count].to_i * peso
-			if peso < 9
-				peso += 1
-			else
-				peso = 2
-			end
+				if peso < 9
+					peso += 1
+				else
+					peso = 2
+				end
 				count -= 1
 			end
 			somatorio = 0

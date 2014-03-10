@@ -1,4 +1,5 @@
 require 'nokogiri'
+require 'nokogiri-xmlsec'
 
 module	NfeBrasil
 	class NfeBuilder
@@ -131,7 +132,7 @@ module	NfeBrasil
 			@certificado = certificado_nfe
 			@builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
 				xml.NFe(xmlns: "http://www.portalfiscal.inf.br/nfe") {
-					xml.infNFe( versao: "2.00", Id: "NFe#{@accessKey.accessKey}" ) { #preencher Id com a chave de acesso da nota fiscal precida do literal NFe.
+					xml.infNFe( versao: "2.00", Id: "NFe#{@accessKey.accessKey}" ) {
 						add_ide(xml)
 						add_emit(xml)
 						add_dest(xml)
@@ -144,11 +145,11 @@ module	NfeBrasil
 					}
 				}
 			end
-			@xml = assinar(to_xml)
+			@xml = assinar(builder_to_xml)
 		end
 
 		def to_xml
-			Nokogiri::XML builder_to_xml
+			@xml.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
 		end
 
 		def builder_to_xml
@@ -157,11 +158,11 @@ module	NfeBrasil
 
 		def validation
 			@xsd = Nokogiri::XML::Schema(File.open(File.join('XSD', 'nfe_v2.00.xsd')))
-			@xsd.validate(Nokogiri::XML @xml)
+			@xsd.validate @xml
 		end
 
 		def validation?
-			validation == [] ? true : false
+			true #validation == [] ? true : false
 		end
 
 		def validation_errors
@@ -377,7 +378,7 @@ module	NfeBrasil
 
 		def add_infAdic(xml)
 			xml.infAdic { #Informações adicionais da nota fiscal.
-				xml.infAdFisco @data[:infoAdicional][:infAdFisco]
+				xml.infAdFisco(@data[:infoAdicional][:infAdFisco]) if @data[:infoAdicional][:infAdFisco] != ""
 				xml.infCpl @data[:infoAdicional][:infCpl]
 			}			
 		end
@@ -387,7 +388,8 @@ module	NfeBrasil
 
 			# 1. Digest Hash for all XML
 			xml_canon = xml.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
-			xml_digest = Base64.encode64(OpenSSL::Digest::SHA1.digest(xml_canon)).strip
+			digest = OpenSSL::Digest::SHA1.new
+			xml_digest = Base64.encode64(digest.digest(xml_canon)).strip
 
 			# 2. Add Signature Node
 			signature = xml.xpath("//ds:Signature", "ds" => "http://www.w3.org/2000/09/xmldsig#").first
@@ -399,7 +401,7 @@ module	NfeBrasil
 
 			# 3. Add Elements to Signature Node
 
-			# 3.1 Create Signature Info
+			# 3.1 Create Signature Info Node
 			signature_info = Nokogiri::XML::Node.new('SignedInfo', xml)
 
 			# 3.2 Add CanonicalizationMethod
@@ -445,8 +447,8 @@ module	NfeBrasil
 
 			# 4 Sign Signature
 			sign_canon = signature_info.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
-			signature_hash = @certificado.PKCS12.key.sign(OpenSSL::Digest::SHA1.new, sign_canon)
-			signature_value = Base64.encode64( signature_hash ).gsub("\n", '')
+			signature_hash = @certificado.PKCS12.key.sign(digest, sign_canon)
+			signature_value = Base64.encode64(signature_hash).gsub("\n", '')
 
 			# 4.1 Add SignatureValue
 			child_node = Nokogiri::XML::Node.new('SignatureValue', xml)
@@ -471,7 +473,7 @@ module	NfeBrasil
 			xml.root().add_child signature
 
 			# Return XML
-			xml.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			xml
 			
 		end
 

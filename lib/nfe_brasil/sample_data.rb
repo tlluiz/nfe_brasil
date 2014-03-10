@@ -7,8 +7,8 @@ module NfeBrasil
 				formaPagamento: '0', #Forma de pagamento: 0 - à vista, 1 - à prazo, 2 - outros
 				modelo: '55', #Utilizar o código 55 para identificação da NF-e, emitida em substituição ao modelo 1 ou 1A.
 				serie: '1', #Preencher com Zeros caso a NF não possuir série.
-				dataEmissao: '2014-02-01', #Data de Emissão da Nota fiscal.
-				dataSaidaEntrada: '2014-02-01', #Data de Saída ou Entrada de Mercadoria ou Produto.
+				dataEmissao: Date.today.to_s, #Data de Emissão da Nota fiscal.
+				dataSaidaEntrada: Date.today.to_s, #Data de Saída ou Entrada de Mercadoria ou Produto.
 				horaSaidaEntrada: '17:24:30', #Hora de Saída da Mercadoria - Formato: HH:MM:SS.
 				tipoOperacao: '1', #Tipo de Operação: 0 - Entrada, 1 - Saída.
 				tipoImpressao: '1', #Formato de Impressão do DANFE: 1 - retrato, 2 - paisagem
@@ -18,52 +18,52 @@ module NfeBrasil
 				processoEmissao: '0' #Processo de Emissão da Nf-e: 0 - Aplicativo do Contrinuinte, 1 - Pelo fisco, 2 - Aplicativo de Fisco
 			},
 			emitente: {
-				cnpj: '01999999000199', #CNPJ da empresa emissora da NF.
-				razaoSocial: 'Razão social LTDA', #Razão social da Empresa Emissora.
-				nomeFantasia: 'Nome Fantasia', #Noma fantasia da empresa emissora da NF.
+				cnpj: '10450992000102', #CNPJ da empresa emissora da NF.
+				razaoSocial: 'Nilma Carla Vieira - ME', #Razão social da Empresa Emissora.
+				nomeFantasia: 'Newbrind', #Noma fantasia da empresa emissora da NF.
 				endereco: {
-					logradouro: 'Rua Das couves',
-					numero: '123',
-					complemento: 'Fundos',
-					bairro: 'Jardom das Hortaliças',
+					logradouro: 'Rua Antônio Carlos Oliveira Bottas',
+					numero: '1820',
+					complemento: 'C15',
+					bairro: 'Vila Borguese III',
 					codigoMunicipio: '3549805', #Código de São José do Rio Preto
-					municipio: 'São José do Rio Preto',
+					municipio: 'Sao Jose do Rio Preto',
 					codigoUF: '35',
 					uf: 'SP',
-					cep: '15000000',
+					cep: '15041570',
 					codigoPais: '1058', #Código BACEN do Brasil
 					pais: 'Brasil',
-					fone: '1732323232'
+					fone: '1732372261'
 				},
-				ie: 'ISENTO',
+				ie: '647544703117',
 				crt: '1'
 			},
 			destinatario: {
-				cnpj: '12345678000199',
+				cnpj: '08298925000172',
 				cpf: '',
-				razaoSocial: 'Razão Social o Nome do Destinatário',
+				razaoSocial: 'ESSENCIA SFR COMERCIO E SERVICOS DE BELEZALTDA ME',
 				endereco: {
-					logradouro: 'Rua COuves Segunda',
-					numero: '1234',
-					complemento: 'Frente',
-					bairro: 'Jardim Horta',
-					codigoMunicipio: '3549805',
-					municipio: 'São José do Rio Preto',
+					logradouro: 'Av. Floriano Peixoto',
+					numero: '052',
+					complemento: 'Segundo Andar',
+					bairro: 'Gonzaga',
+					codigoMunicipio: '3548500',
+					municipio: 'Santos',
 					uf: 'SP',
-					cep: '15000000',
+					cep: '11060300',
 					codigoPais: '1058',
 					pais: 'Brasil',
-					fone: '1732323232'
+					fone: '1333263361'
 				},
-				ie: 'ISENTO',
+				ie: '633640263111',
 				inscricaoSuframa: '',
-				email: 'email@email.com'
+				email: 'suelytonasso@yahoo.com.br'
 			},
 			detalhes: {
 				det1: {
 					produto: { #Informações sobre o produto ou serviço.
 						cProd: "3", #Código do Produto ou Serviço - Preencher com CFOP caso se trate de itens não relacionados a mercadoria ou produtos e que o contribuinte não possua numeração própria ex: 'CFOP9999'
-						xProd: "Pé de Alface",
+						xProd: "Pe de Alface",
 						NCM: "07051100",
 						CFOP: "5102", #Código CFOP: 5102 - Venda de mercadorias adquirida ou recebida de terceiros.
 						uCom: "Unit", #Unidade Comercial.
@@ -72,7 +72,7 @@ module NfeBrasil
 						vProd: "30.00", #Valor total dos produtos.
 						uTrib: "Unit", #Unidade Tributável.
 						qTrib: "1", #Quantidade tributável - informar a quantidade de tributação do produto.
-						vUnTrib: "0", #Valor unitário de tributação.
+						vUnTrib: "30.00", #Valor unitário de tributação.
 						indTot: "1" #Indica se o campo vProd desse item compõe o valor total da nota: 0 - Não compõe, 1 - Compõe.
 					},
 					imposto: { #Informações sobre os impostos incidentes nesse produto
@@ -124,12 +124,12 @@ module NfeBrasil
 				modFrete: "0", #Modalidade do Frete: 0 - Por conta do emitente, 1 - Por conta do destinatário, 2 - Por conta de terceiro, 9 - Sem frete.
 				transporta: { #Informações da transportadora.
 					#Escolha entre um dos dois campos abaixo.
-					cnpj: "12345678000101", #CNPJ da empresa transportadora.
+					cnpj: "48740351001994", #CNPJ da empresa transportadora.
 					cpf: "", #CPF do transportador.
-					razaoSocial: "Razão Social ou Nome Completo do Transportador", #Razão Social ou Nome Completo do Transportador.
-					ie: "123456789", #Inscrição Estadual do Transportador.
-					endereco: "Rua Nove Horas, 1234, Jardim Relógio", #Endereço completo.
-					municipio: "Pontualidade", #Nome do município.
+					razaoSocial: "BRASPRESS TRANSP.URGENTES LTDA", #Razão Social ou Nome Completo do Transportador.
+					ie: "647463786114", #Inscrição Estadual do Transportador.
+					endereco: "AV.MARIO ANDREAZZA, 401", #Endereço completo.
+					municipio: "Sao Jose do Rio Preto", #Nome do município.
 					uf: "SP" #Sigla do estado. Deve ser informado caso o nó IE seja preenchido.
 				},
 				volumes: { #Informações de Volumes a serem transportados.
@@ -141,15 +141,15 @@ module NfeBrasil
 			},
 			cobranca: {
 				fatura: { #Informações de faturamento.
-					nFat: "12345", #Número da Fatura.
+					nFat: "250", #Número da Fatura.
 					vOrig: "30.00", #Valor Original da Fatura.
 					# xml.vDesc "0.00" #Valor de Desconto.
 					vLiq: "30.00", #Valor líquido da fatura.
 				}
 			},
 			infoAdicional: {
-				infAdFisco: "Olá!", #Informações adicionais de interesse do fisco.
-				infCpl: "Essa empresa é optante pelo Simples Nacional." #Informações adicionais de interesse do contribuinte.
+				infAdFisco: "", #Informações adicionais de interesse do fisco.
+				infCpl: "Essa empresa e optante pelo Simples Nacional" #Informações adicionais de interesse do contribuinte.
 
 
 			}
