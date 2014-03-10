@@ -162,7 +162,7 @@ module	NfeBrasil
 		end
 
 		def validation?
-			true #validation == [] ? true : false
+			validation == [] ? true : false
 		end
 
 		def validation_errors

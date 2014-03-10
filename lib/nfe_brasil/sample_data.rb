@@ -19,7 +19,7 @@ module NfeBrasil
 			},
 			emitente: {
 				cnpj: '10450992000102', #CNPJ da empresa emissora da NF.
-				razaoSocial: 'Nilma Carla Vieira - ME', #Razão social da Empresa Emissora.
+				razaoSocial: 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL', #Razão social da Empresa Emissora.
 				nomeFantasia: 'Newbrind', #Noma fantasia da empresa emissora da NF.
 				endereco: {
 					logradouro: 'Rua Antônio Carlos Oliveira Bottas',

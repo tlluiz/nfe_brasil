@@ -53,7 +53,7 @@ module NfeBrasil
 		end
 
 		def envio_nfe_validation?(xml)
-			true #envio_nfe_validation(xml) == [] ? true : false
+			envio_nfe_validation(xml) == [] ? true : false
 		end
 
 		def envio_nfe_validation(xml)
