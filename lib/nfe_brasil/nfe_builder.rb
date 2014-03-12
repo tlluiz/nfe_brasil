@@ -1,5 +1,4 @@
 require 'nokogiri'
-require 'nokogiri-xmlsec'
 
 module	NfeBrasil
 	class NfeBuilder
