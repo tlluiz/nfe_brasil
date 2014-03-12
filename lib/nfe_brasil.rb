@@ -6,7 +6,6 @@ require 'nfe_brasil/certificate'
 require 'nfe_brasil/gateway'
 require 'nfe_brasil/response'
 require 'nfe_brasil/danfe_builder'
-require 'signer'
 require 'savon'
 
 
