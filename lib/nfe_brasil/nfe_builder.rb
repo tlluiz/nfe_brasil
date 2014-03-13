@@ -129,7 +129,7 @@ module	NfeBrasil
 			@data = DATA.merge(data)
 			access_key_generate
 			@certificado = certificado_nfe
-			@builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
+			builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
 				xml.NFe(xmlns: "http://www.portalfiscal.inf.br/nfe") {
 					xml.infNFe( versao: "2.00", Id: "NFe#{@accessKey.accessKey}" ) {
 						add_ide(xml)
@@ -141,23 +141,23 @@ module	NfeBrasil
 						add_transp(xml)
 						add_cobr(xml)
 						add_infAdic(xml)
-					}
+					}					
 				}
 			end
-			@xml = assinar(builder_to_xml)
+			@xml = assinar(builder)
 		end
 
 		def to_xml
-			@xml.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			@xml
 		end
 
-		def builder_to_xml
-			@builder.to_xml( save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION )
-		end
+		# def builder_to_xml
+		# 	@builder.to_xml( save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION )
+		# end
 
 		def validation
 			@xsd = Nokogiri::XML::Schema(File.open(File.join('XSD', 'nfe_v2.00.xsd')))
-			@xsd.validate @xml
+			@xsd.validate Nokogiri::XML(@xml, &:noblanks)
 		end
 
 		def validation?
@@ -382,8 +382,11 @@ module	NfeBrasil
 			}			
 		end
 
-		def assinar(xml)
-			xml = Nokogiri::XML(xml.to_s, &:noblanks)
+		def assinar(builder)
+			xml_builder = builder.to_xml( save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION )
+
+			xml = Nokogiri::XML(xml_builder.to_s, &:noblanks)
+			# xml_to_signed = xml.xpath("infNFe").first
 
 			# 1. Digest Hash for all XML
 			xml_canon = xml.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
@@ -468,12 +471,12 @@ module	NfeBrasil
 			# 5.2 Add KeyInfo
 			signature.add_child key_info
 
-			# 6 Add Signature
+			# 7 Add Signature
 			xml.root().add_child signature
 
 			# Return XML
-			xml
-			
+			xml = Nokogiri::XML xml.to_s, &:noblanks
+			xml.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
 		end
 
 		def access_key_generate

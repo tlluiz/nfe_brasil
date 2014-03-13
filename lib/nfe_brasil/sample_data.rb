@@ -2,9 +2,9 @@ module NfeBrasil
 	class SampleData
 		DATA = {
 			identificacao: {
-				nNf: '1',
+				nNf: '1756',
 				naturezaOperacao: 'venda', #Natureza da Operação: venda, compra, transferência, devolução, importação, consignação, remessa
-				formaPagamento: '0', #Forma de pagamento: 0 - à vista, 1 - à prazo, 2 - outros
+				formaPagamento: '1', #Forma de pagamento: 0 - à vista, 1 - à prazo, 2 - outros
 				modelo: '55', #Utilizar o código 55 para identificação da NF-e, emitida em substituição ao modelo 1 ou 1A.
 				serie: '1', #Preencher com Zeros caso a NF não possuir série.
 				dataEmissao: Date.today.to_s, #Data de Emissão da Nota fiscal.

@@ -43,6 +43,7 @@ module NfeBrasil
 						}
 					}
 					resp = request(:nfe_recepcao_lote2, soap_header, xml)
+					retorna_xml(xml)
 					@response.envio_nfe(resp.body)
 				else
 					envio_nfe_validation_errors(xml)
@@ -50,6 +51,15 @@ module NfeBrasil
 			else
 				"Validação da NFe falhou"
 			end
+		end
+
+		def retorna_xml(xml)
+			puts "===================================================="
+			puts "XML Enviado"
+			puts "===================================================="
+			puts xml
+			puts "===================================================="
+			puts "===================================================="
 		end
 
 		def envio_nfe_validation?(xml)
