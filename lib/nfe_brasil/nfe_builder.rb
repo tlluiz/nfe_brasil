@@ -174,6 +174,10 @@ module	NfeBrasil
 			puts "============================"
 		end
 
+		def signature_info
+			@signature_info
+		end
+
 		private
 
 		def add_ide(xml)
@@ -388,8 +392,16 @@ module	NfeBrasil
 			xml = Nokogiri::XML(xml_builder.to_s, &:noblanks)
 			# xml_to_signed = xml.xpath("infNFe").first
 
-			# 1. Digest Hash for all XML
-			xml_canon = xml.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			# 1. Digest Hash for infNFe
+			xml_infNFe = xml.xpath("//xmlns:infNFe")
+			xml_canon = Nokogiri::XML(xml_infNFe.to_s, &:noblanks).canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			puts "=============================="
+			puts "Nós InfNFe que será usado para a geração do digest"
+			puts "=============================="
+			puts xml_canon
+			puts "=============================="
+			puts "=============================="
+
 			digest = OpenSSL::Digest::SHA1.new
 			xml_digest = Base64.encode64(digest.digest(xml_canon)).strip
 
@@ -423,10 +435,12 @@ module	NfeBrasil
 			# 3.5 Add Transforms
 			transforms = Nokogiri::XML::Node.new('Transforms', xml)
 
+			# child_node = Nokogiri::XML('').create_element('Transform')
 			child_node  = Nokogiri::XML::Node.new('Transform', xml)
 			child_node['Algorithm'] = 'http://www.w3.org/2000/09/xmldsig#enveloped-signature'
 			transforms.add_child child_node
 
+			# child_node = Nokogiri::XML('').create_element('Transform')
 			child_node  = Nokogiri::XML::Node.new('Transform', xml)
 			child_node['Algorithm'] = 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315'
 			transforms.add_child child_node
@@ -447,9 +461,24 @@ module	NfeBrasil
 			signature_info.add_child reference
 			signature.add_child signature_info
 
+			@signature_info = signature_info
+
 			# 4 Sign Signature
-			sign_canon = signature_info.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
-			signature_hash = @certificado.PKCS12.key.sign(digest, sign_canon)
+			puts "=============================="
+			puts "Nós SignatureInfo antes da Canonicalização"
+			puts "=============================="
+			puts signature_info.to_s
+			puts "=============================="
+			puts "=============================="
+			sign_canon = signature_info.content.strip
+			puts "=============================="
+			puts "Nós SignatureInfo que é usado para assinar a nota"
+			puts "=============================="
+			puts sign_canon
+			puts "=============================="
+			puts "=============================="
+
+			signature_hash = @certificado.PKCS12.key.sign(OpenSSL::Digest::SHA1.new, sign_canon)
 			signature_value = Base64.encode64(signature_hash).gsub("\n", '')
 
 			# 4.1 Add SignatureValue

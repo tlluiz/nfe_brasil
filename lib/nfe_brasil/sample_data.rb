@@ -2,14 +2,14 @@ module NfeBrasil
 	class SampleData
 		DATA = {
 			identificacao: {
-				nNf: '1756',
+				nNf: '2',
 				naturezaOperacao: 'venda', #Natureza da Operação: venda, compra, transferência, devolução, importação, consignação, remessa
 				formaPagamento: '1', #Forma de pagamento: 0 - à vista, 1 - à prazo, 2 - outros
 				modelo: '55', #Utilizar o código 55 para identificação da NF-e, emitida em substituição ao modelo 1 ou 1A.
 				serie: '1', #Preencher com Zeros caso a NF não possuir série.
 				dataEmissao: Date.today.to_s, #Data de Emissão da Nota fiscal.
 				dataSaidaEntrada: Date.today.to_s, #Data de Saída ou Entrada de Mercadoria ou Produto.
-				horaSaidaEntrada: '17:24:30', #Hora de Saída da Mercadoria - Formato: HH:MM:SS.
+				horaSaidaEntrada: Time.now.strftime("%H:%M:%S"), #Hora de Saída da Mercadoria - Formato: HH:MM:SS.
 				tipoOperacao: '1', #Tipo de Operação: 0 - Entrada, 1 - Saída.
 				tipoImpressao: '1', #Formato de Impressão do DANFE: 1 - retrato, 2 - paisagem
 				tipoEmissao: '1', #Tipo de Emissão: 1 - Normal, 2 - Contingência FS, 3 - Contingência SCAN...
@@ -22,7 +22,7 @@ module NfeBrasil
 				razaoSocial: 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL', #Razão social da Empresa Emissora.
 				nomeFantasia: 'Newbrind', #Noma fantasia da empresa emissora da NF.
 				endereco: {
-					logradouro: 'Rua Antônio Carlos Oliveira Bottas',
+					logradouro: 'Rua Antonio Carlos Oliveira Bottas',
 					numero: '1820',
 					complemento: 'C15',
 					bairro: 'Vila Borguese III',
@@ -43,7 +43,7 @@ module NfeBrasil
 				cpf: '',
 				razaoSocial: 'ESSENCIA SFR COMERCIO E SERVICOS DE BELEZALTDA ME',
 				endereco: {
-					logradouro: 'Av. Floriano Peixoto',
+					logradouro: 'Av Floriano Peixoto',
 					numero: '052',
 					complemento: 'Segundo Andar',
 					bairro: 'Gonzaga',
@@ -126,9 +126,9 @@ module NfeBrasil
 					#Escolha entre um dos dois campos abaixo.
 					cnpj: "48740351001994", #CNPJ da empresa transportadora.
 					cpf: "", #CPF do transportador.
-					razaoSocial: "BRASPRESS TRANSP.URGENTES LTDA", #Razão Social ou Nome Completo do Transportador.
+					razaoSocial: "BRASPRESS TRANSP URGENTES LTDA", #Razão Social ou Nome Completo do Transportador.
 					ie: "647463786114", #Inscrição Estadual do Transportador.
-					endereco: "AV.MARIO ANDREAZZA, 401", #Endereço completo.
+					endereco: "AV MARIO ANDREAZZA, 401", #Endereço completo.
 					municipio: "Sao Jose do Rio Preto", #Nome do município.
 					uf: "SP" #Sigla do estado. Deve ser informado caso o nó IE seja preenchido.
 				},
