@@ -26,59 +26,29 @@ module NfeBrasil
 			@wsdl = AMBIENTE[@ambiente][:nfe_recepcao_lote2]
 			nfe = NfeBuilder.new(data, @certificate)
 			if nfe.validation?
-				builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
-					xml.enviNFe(xmlns: "http://www.portalfiscal.inf.br/nfe", versao: '2.00') {
-						xml.idLote data[:identificacao][:nNf]
+				soap_header = {
+					"nfeCabecMsg" => {
+						"@xmlns" => "http://www.portalfiscal.inf.br/nfe/wsdl/NfeRecepcao2",
+						"cUF" => "35",
+						"versaoDados" => "2.00"
 					}
-				end
-				xml = to_xml builder
-				xml.root().add_child nfe.to_xml
-				xml = xml.canonicalize Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0
-				if envio_nfe_validation?(xml)
-					soap_header = {
-						"nfeCabecMsg" => {
-							"@xmlns" => "http://www.portalfiscal.inf.br/nfe/wsdl/NfeRecepcao2",
-							"cUF" => "35",
-							"versaoDados" => "2.00"
-						}
-					}
-					resp = request(:nfe_recepcao_lote2, soap_header, xml)
-					retorna_xml(xml)
-					@response.envio_nfe(resp.body)
-				else
-					envio_nfe_validation_errors(xml)
-				end
+				}
+				resp = request(:nfe_recepcao_lote2, soap_header, nfe.to_xml)
+				retorna_xml(nfe)
+				@response.envio_nfe(resp.body)
 			else
 				"Validação da NFe falhou"
 			end
 		end
 
-		def retorna_xml(xml)
+		def retorna_xml(nfe)
 			puts "===================================================="
 			puts "XML Enviado"
 			puts "===================================================="
-			puts xml
+			puts nfe.to_xml
 			puts "===================================================="
 			puts "===================================================="
-		end
-
-		def envio_nfe_validation?(xml)
-			envio_nfe_validation(xml) == [] ? true : false
-		end
-
-		def envio_nfe_validation(xml)
-			xsd = Nokogiri::XML::Schema(File.open(File.join('XSD', 'enviNFe_v2.00.xsd')))
-			xsd.validate(Nokogiri::XML xml)			
-		end
-
-		def envio_nfe_validation_errors(xml)
-			puts "============================"
-			puts "Erros de Validação do XML de Envio da NFe"
-			puts "============================"
-			envio_nfe_validation(xml).each do |error|
-				puts error
-			end
-			puts "============================"
+			nfe.to_xml
 		end
 
 		def retorno_envio(numero_recibo, ambiente) # 1 - Produção, 2 - Homologação
@@ -90,8 +60,8 @@ module NfeBrasil
 					xml.nRec numero_recibo
 				}
 			end
-			xml = to_xml builder
-			xml = xml.canonicalize Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0
+			xml = Nokogiri::XML builder.to_xml(save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION ), &:noblanks
+			xml = xml.canonicalize Nokogiri::XML::XML_C14N_1_0
 			soap_header = {
 				"nfeCabecMsg" => {
 					"@xmlns" => "http://www.portalfiscal.inf.br/nfe/wsdl/NfeRetRecepcao2",
@@ -114,7 +84,7 @@ module NfeBrasil
 		private
 
 		def to_xml(builder)
-			Nokogiri::XML builder.to_xml(save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION ), &:noblanks
+			
 		end
 
 

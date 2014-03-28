@@ -1,4 +1,5 @@
 require 'nokogiri'
+require 'i18n'
 
 module	NfeBrasil
 	class NfeBuilder
@@ -130,17 +131,20 @@ module	NfeBrasil
 			access_key_generate
 			@certificado = certificado_nfe
 			builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
-				xml.NFe(xmlns: "http://www.portalfiscal.inf.br/nfe") {
-					xml.infNFe( versao: "2.00", Id: "NFe#{@accessKey.accessKey}" ) {
-						add_ide(xml)
-						add_emit(xml)
-						add_dest(xml)
-						add_entrega(xml)
-						add_loop_det(xml)
-						add_total(xml)
-						add_transp(xml)
-						add_cobr(xml)
-						add_infAdic(xml)
+				xml.enviNFe("xmlns" => "http://www.portalfiscal.inf.br/nfe", "versao" => '2.00') {
+					xml.idLote data[:identificacao][:nNf]
+					xml.NFe {
+						xml.infNFe("Id" => "NFe#{@accessKey.accessKey}", "versao" => '2.00' ) {
+							add_ide(xml)
+							add_emit(xml)
+							add_dest(xml)
+							# add_entrega(xml)
+							add_loop_det(xml)
+							add_total(xml)
+							add_transp(xml)
+							add_cobr(xml)
+							add_infAdic(xml)
+						}					
 					}					
 				}
 			end
@@ -148,7 +152,7 @@ module	NfeBrasil
 		end
 
 		def to_xml
-			@xml
+			puts @xml
 		end
 
 		# def builder_to_xml
@@ -156,7 +160,7 @@ module	NfeBrasil
 		# end
 
 		def validation
-			@xsd = Nokogiri::XML::Schema(File.open(File.join('XSD', 'nfe_v2.00.xsd')))
+			@xsd = Nokogiri::XML::Schema(File.open(File.join('XSD', 'enviNFe_v2.00.xsd')))
 			@xsd.validate Nokogiri::XML(@xml, &:noblanks)
 		end
 
@@ -190,8 +194,8 @@ module	NfeBrasil
 				xml.serie @data[:identificacao][:serie]
 				xml.nNF @data[:identificacao][:nNf]
 				xml.dEmi @data[:identificacao][:dataEmissao]
-				xml.dSaiEnt @data[:identificacao][:dataSaidaEntrada]
-				xml.hSaiEnt @data[:identificacao][:horaSaidaEntrada]
+				# xml.dSaiEnt @data[:identificacao][:dataSaidaEntrada]
+				# xml.hSaiEnt @data[:identificacao][:horaSaidaEntrada]
 				xml.tpNF @data[:identificacao][:tipoOperacao]
 				xml.cMunFG @data[:emitente][:endereco][:codigoMunicipio]
 				xml.tpImp @data[:identificacao][:tipoImpressao]
@@ -207,20 +211,20 @@ module	NfeBrasil
 		def add_emit(xml)
 			xml.emit { #inofrmações do Emitente da nota fiscal
 				xml.CNPJ @data[:emitente][:cnpj]
-				xml.xNome @data[:emitente][:razaoSocial]
+				xml.xNome I18n.transliterate(@data[:emitente][:razaoSocial])
 				xml.xFant @data[:emitente][:nomeFantasia]
 				xml.enderEmit {
-					xml.xLgr @data[:emitente][:endereco][:logradouro]
+					xml.xLgr I18n.transliterate(@data[:emitente][:endereco][:logradouro])
 					xml.nro @data[:emitente][:endereco][:numero]
 					xml.xCpl @data[:emitente][:endereco][:complemento]
-					xml.xBairro @data[:emitente][:endereco][:bairro]
+					xml.xBairro I18n.transliterate(@data[:emitente][:endereco][:bairro])
 					xml.cMun @data[:emitente][:endereco][:codigoMunicipio]
-					xml.xMun @data[:emitente][:endereco][:municipio]
+					xml.xMun I18n.transliterate(@data[:emitente][:endereco][:municipio])
 					xml.UF @data[:emitente][:endereco][:uf]
 					xml.CEP @data[:emitente][:endereco][:cep]
 					xml.cPais @data[:emitente][:endereco][:codigoPais]
 					xml.xPais @data[:emitente][:endereco][:pais]
-					xml.fone @data[:emitente][:endereco][:fone]
+					# xml.fone @data[:emitente][:endereco][:fone]
 				}
 				xml.IE @data[:emitente][:ie]
 				xml.CRT @data[:emitente][:crt]
@@ -231,14 +235,14 @@ module	NfeBrasil
 			xml.dest { #Informações do destinatário da NF eletrônica.
 				#Escolha entre os dois nós a seguir.
 				@data[:destinatario][:cnpj] != '' ? (xml.CNPJ @data[:destinatario][:cnpj]) : (xml.CPF @data[:destinatario][:cpf])
-				xml.xNome @data[:destinatario][:razaoSocial]
+				xml.xNome I18n.transliterate(@data[:destinatario][:razaoSocial])
 				xml.enderDest {
-					xml.xLgr @data[:destinatario][:endereco][:logradouro]
+					xml.xLgr I18n.transliterate(@data[:destinatario][:endereco][:logradouro])
 					xml.nro @data[:destinatario][:endereco][:numero]
-					xml.xCpl @data[:destinatario][:endereco][:complemento]
-					xml.xBairro @data[:destinatario][:endereco][:bairro]
+					# xml.xCpl @data[:destinatario][:endereco][:complemento]
+					xml.xBairro I18n.transliterate(@data[:destinatario][:endereco][:bairro])
 					xml.cMun @data[:destinatario][:endereco][:codigoMunicipio]
-					xml.xMun @data[:destinatario][:endereco][:municipio]
+					xml.xMun I18n.transliterate(@data[:destinatario][:endereco][:municipio])
 					xml.UF @data[:destinatario][:endereco][:uf]
 					xml.CEP @data[:destinatario][:endereco][:cep]
 					xml.cPais @data[:destinatario][:endereco][:codigoPais]
@@ -247,7 +251,7 @@ module	NfeBrasil
 				}
 				xml.IE @data[:destinatario][:ie]
 				(xml.ISUF @data[:destinatario][:inscricaoSuframa]) if @data[:destinatario][:inscricaoSuframa] != ''
-				xml.email @data[:destinatario][:email]
+				# xml.email I18n.transliterate(@data[:destinatario][:email])
 			}
 		end
 
@@ -278,20 +282,20 @@ module	NfeBrasil
 		def add_det(xml, item, nItem)
 			xml.det(nItem: nItem) {
 				xml.prod {
-					xml.cProd item[:produto][:cProd]
+					xml.cProd I18n.transliterate(item[:produto][:cProd])
 					xml.cEAN
-					xml.xProd item[:produto][:xProd]
-					xml.NCM item[:produto][:NCM]
-					xml.CFOP item[:produto][:CFOP]
-					xml.uCom item[:produto][:uCom]
-					xml.qCom item[:produto][:qCom]
-					xml.vUnCom item[:produto][:vUnCom]
-					xml.vProd item[:produto][:vProd]
+					xml.xProd I18n.transliterate(item[:produto][:xProd])
+					xml.NCM I18n.transliterate(item[:produto][:NCM])
+					xml.CFOP I18n.transliterate(item[:produto][:CFOP])
+					xml.uCom I18n.transliterate(item[:produto][:uCom])
+					xml.qCom I18n.transliterate(item[:produto][:qCom])
+					xml.vUnCom I18n.transliterate(item[:produto][:vUnCom])
+					xml.vProd I18n.transliterate(item[:produto][:vProd])
 					xml.cEANTrib
-					xml.uTrib item[:produto][:uTrib]
-					xml.qTrib item[:produto][:qTrib]
-					xml.vUnTrib item[:produto][:vUnTrib]
-					xml.indTot item[:produto][:indTot]
+					xml.uTrib I18n.transliterate(item[:produto][:uTrib])
+					xml.qTrib I18n.transliterate(item[:produto][:qTrib])
+					xml.vUnTrib I18n.transliterate(item[:produto][:vUnTrib])
+					xml.indTot I18n.transliterate(item[:produto][:indTot])
 				}
 				xml.imposto {
 					xml.ICMS {
@@ -348,17 +352,17 @@ module	NfeBrasil
 				xml.transporta {
 					#Escolha entre um dos dois campos abaixo.
 					xml.CNPJ @data[:transporte][:transporta][:cnpj]
-					xml.xNome @data[:transporte][:transporta][:razaoSocial]
-					xml.IE @data[:transporte][:transporta][:ie]
-					xml.xEnder @data[:transporte][:transporta][:endereco]
-					xml.xMun @data[:transporte][:transporta][:municipio]
-					xml.UF @data[:transporte][:transporta][:uf]
+					xml.xNome I18n.transliterate(@data[:transporte][:transporta][:razaoSocial])
+					xml.IE I18n.transliterate(@data[:transporte][:transporta][:ie])
+					xml.xEnder I18n.transliterate(@data[:transporte][:transporta][:endereco])
+					xml.xMun I18n.transliterate(@data[:transporte][:transporta][:municipio])
+					xml.UF I18n.transliterate(@data[:transporte][:transporta][:uf])
 				}
 				xml.vol { #Informações de Volumes a serem transportados.
-					xml.qVol @data[:transporte][:volumes][:quantidade]
-					xml.esp @data[:transporte][:volumes][:especie]
-					xml.pesoL @data[:transporte][:volumes][:pesoLiquido]
-					xml.pesoB @data[:transporte][:volumes][:pesoBruto]
+					xml.qVol I18n.transliterate(@data[:transporte][:volumes][:quantidade])
+					xml.esp I18n.transliterate(@data[:transporte][:volumes][:especie])
+					xml.pesoL I18n.transliterate(@data[:transporte][:volumes][:pesoLiquido])
+					xml.pesoB I18n.transliterate(@data[:transporte][:volumes][:pesoBruto])
 				}
 			}
 		end
@@ -367,9 +371,9 @@ module	NfeBrasil
 			xml.cobr { #Informações de Cobrança.
 				xml.fat { #Informações de faturamento.
 					xml.nFat @data[:cobranca][:fatura][:nFat]
-					xml.vOrig @data[:cobranca][:fatura][:vOrig]
+					# xml.vOrig @data[:cobranca][:fatura][:vOrig]
 					# xml.vDesc "0.00" #Valor de Desconto.
-					xml.vLiq @data[:cobranca][:fatura][:vLiq]
+					# xml.vLiq @data[:cobranca][:fatura][:vLiq]
 				}
 				# xml.dup {
 				# 	xml.nDup "" #número da duplicata.
@@ -381,20 +385,28 @@ module	NfeBrasil
 
 		def add_infAdic(xml)
 			xml.infAdic { #Informações adicionais da nota fiscal.
-				xml.infAdFisco(@data[:infoAdicional][:infAdFisco]) if @data[:infoAdicional][:infAdFisco] != ""
-				xml.infCpl @data[:infoAdicional][:infCpl]
+				# xml.infAdFisco(@data[:infoAdicional][:infAdFisco]) if @data[:infoAdicional][:infAdFisco] != ""
+				xml.infCpl I18n.transliterate(@data[:infoAdicional][:infCpl])
 			}			
 		end
 
 		def assinar(builder)
-			xml_builder = builder.to_xml( save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION )
+			xml_builder = builder.to_xml(save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION)
 
 			xml = Nokogiri::XML(xml_builder.to_s, &:noblanks)
+			puts "=============================="
+			puts "XML recebido pelo método Assinar"
+			puts "=============================="
+			puts xml
+			puts "=============================="
+			puts "=============================="
+
 			# xml_to_signed = xml.xpath("infNFe").first
 
 			# 1. Digest Hash for infNFe
 			xml_infNFe = xml.xpath("//xmlns:infNFe")
-			xml_canon = Nokogiri::XML(xml_infNFe.to_s, &:noblanks).canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			xml_canon = Nokogiri::XML(xml_infNFe.to_s, &:noblanks).canonicalize(Nokogiri::XML::XML_C14N_1_0)
+			# xml_canon = xml_infNFe.to_s.gsub(/>\s+</, "><").gsub(/\n/, '')
 			puts "=============================="
 			puts "Nós InfNFe que será usado para a geração do digest"
 			puts "=============================="
@@ -402,8 +414,9 @@ module	NfeBrasil
 			puts "=============================="
 			puts "=============================="
 
-			digest = OpenSSL::Digest::SHA1.new
-			xml_digest = Base64.encode64(digest.digest(xml_canon)).strip
+			# xml_digest = Base64.encode64(OpenSSL::Digest::SHA1.digest(xml_canon)).strip
+			xml_digest = OpenSSL::Digest::SHA1.base64digest(xml_canon)
+
 
 			# 2. Add Signature Node
 			signature = xml.xpath("//ds:Signature", "ds" => "http://www.w3.org/2000/09/xmldsig#").first
@@ -470,7 +483,8 @@ module	NfeBrasil
 			puts signature_info.to_s
 			puts "=============================="
 			puts "=============================="
-			sign_canon = signature_info.content.strip
+			sign_canon = signature_info.canonicalize(Nokogiri::XML::XML_C14N_1_0)
+			# sign_canon = signature_info.to_s.gsub(/>\s+</, "><").gsub(/\n/, '')
 			puts "=============================="
 			puts "Nós SignatureInfo que é usado para assinar a nota"
 			puts "=============================="
@@ -479,7 +493,27 @@ module	NfeBrasil
 			puts "=============================="
 
 			signature_hash = @certificado.PKCS12.key.sign(OpenSSL::Digest::SHA1.new, sign_canon)
-			signature_value = Base64.encode64(signature_hash).gsub("\n", '')
+			puts "=============================="
+			puts "Signature hash antes do Base Encode 64"
+			puts "=============================="
+			puts signature_hash
+			puts "=============================="
+
+			signature_value = Base64.encode64(signature_hash).gsub("\n", '').strip
+			puts "=============================="
+			puts "Signature hash com Base Encode 64"
+			puts "=============================="
+			puts signature_value
+			puts "=============================="
+
+			puts "Verificação da Assinatura"
+			puts "++++++++++++++++++++++++++++++"
+			if @certificado.PKCS12.certificate.public_key.verify(OpenSSL::Digest::SHA1.new, signature_hash, sign_canon)
+				puts "Assinatura Verificada com sucesso"
+			else
+				puts "Problema ao verificar assinatura"
+			end
+			puts "++++++++++++++++++++++++++++++"
 
 			# 4.1 Add SignatureValue
 			child_node = Nokogiri::XML::Node.new('SignatureValue', xml)
@@ -501,11 +535,20 @@ module	NfeBrasil
 			signature.add_child key_info
 
 			# 7 Add Signature
-			xml.root().add_child signature
+			xml.xpath("//xmlns:NFe").first.add_child signature
+
+
+			xml = Nokogiri::XML(xml.to_s, &:noblanks)
+			puts "=============================="
+			puts "XML enviado para o Gateway"
+			puts "=============================="
+			puts xml.canonicalize(Nokogiri::XML::XML_C14N_1_0)
+			puts "=============================="
+			puts "=============================="
 
 			# Return XML
-			xml = Nokogiri::XML xml.to_s, &:noblanks
-			xml.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			xml.canonicalize(Nokogiri::XML::XML_C14N_1_0)
+			# xml.xpath("//xmlns:enviNFe").to_s.gsub(/>\s+</, "><").gsub(/\n/, '')
 		end
 
 		def access_key_generate

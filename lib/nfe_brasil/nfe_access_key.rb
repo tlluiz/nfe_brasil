@@ -78,7 +78,8 @@ module NfeBrasil
 			8.times do
 				code += SecureRandom.random_number(10).to_s
 			end
-			@randomCode = code
+			# @randomCode = code
+			@randomCode = "19283746"
 		end
 
 	end

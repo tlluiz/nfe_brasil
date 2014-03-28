@@ -8,7 +8,6 @@ require 'nfe_brasil/response'
 require 'nfe_brasil/danfe_builder'
 require 'savon'
 
-
 module NfeBrasil
 	# def self.build(data, certificate_path)
 	# 	certificado = Certificate.new(certificate_path)
