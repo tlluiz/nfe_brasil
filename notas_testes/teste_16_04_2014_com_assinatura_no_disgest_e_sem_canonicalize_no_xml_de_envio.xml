@@ -1,0 +1,209 @@
+<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="2.00">
+	<idLote>1756</idLote>
+	<NFe>
+		<infNFe Id="NFe35140410450992000102550010000017561192837465" versao="2.00">
+			<ide>
+				<cUF>35</cUF>
+				<cNF>19283746</cNF>
+				<natOp>venda</natOp>
+				<indPag>1</indPag>
+				<mod>55</mod>
+				<serie>1</serie>
+				<nNF>1756</nNF>
+				<dEmi>2014-04-16</dEmi>
+				<tpNF>1</tpNF>
+				<cMunFG>3549805</cMunFG>
+				<tpImp>1</tpImp>
+				<tpEmis>1</tpEmis>
+				<cDV>5</cDV>
+				<tpAmb>2</tpAmb>
+				<finNFe>1</finNFe>
+				<procEmi>3</procEmi>
+				<verProc>0.0.5</verProc>
+			</ide>
+			<emit>
+				<CNPJ>10450992000102</CNPJ>
+				<xNome>Nilma Carla Vieira ME</xNome>
+				<xFant>Newbrind</xFant>
+				<enderEmit>
+					<xLgr>Rua Antonio Carlos Oliveira Bottas</xLgr>
+					<nro>1820</nro>
+					<xCpl>c15</xCpl>
+					<xBairro>Villa Borguese III</xBairro>
+					<cMun>3549805</cMun>
+					<xMun>Sao Jose do Rio Preto</xMun>
+					<UF>SP</UF>
+					<CEP>15041570</CEP>
+					<cPais>1058</cPais>
+					<xPais>BRASIL</xPais>
+				</enderEmit>
+				<IE>647544703117</IE>
+				<CRT>1</CRT>
+			</emit>
+			<dest>
+				<CNPJ>06297971000121</CNPJ>
+				<xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
+				<enderDest>
+					<xLgr>R VOLUNATARIOS DA FRANCA</xLgr>
+					<nro>1575</nro>
+					<xBairro>CENTRO</xBairro>
+					<cMun>3516200</cMun>
+					<xMun>Franca</xMun>
+					<UF>SP</UF>
+					<CEP>14400490</CEP>
+					<cPais>1058</cPais>
+					<xPais>BRASIL</xPais>
+					<fone>34028384</fone>
+				</enderDest>
+				<IE>310383100112</IE>
+			</dest>
+			<det nItem="1">
+				<prod>
+					<cProd>65</cProd>
+					<cEAN/>
+					<xProd>Capa de lixa 200 pc</xProd>
+					<NCM>48196000</NCM>
+					<CFOP>5102</CFOP>
+					<uCom>PCTE</uCom>
+					<qCom>1.0000</qCom>
+					<vUnCom>109.9000000000</vUnCom>
+					<vProd>109.90</vProd>
+					<cEANTrib/>
+					<uTrib>PCTE</uTrib>
+					<qTrib>1.0000</qTrib>
+					<vUnTrib>109.9000000000</vUnTrib>
+					<indTot>1</indTot>
+				</prod>
+				<imposto>
+					<ICMS>
+						<ICMSSN102>
+							<orig>0</orig>
+							<CSOSN>400</CSOSN>
+						</ICMSSN102>
+					</ICMS>
+					<IPI>
+						<cEnq>0</cEnq>
+						<IPINT>
+							<CST>52</CST>
+						</IPINT>
+					</IPI>
+					<PIS>
+						<PISNT>
+							<CST>07</CST>
+						</PISNT>
+					</PIS>
+					<COFINS>
+						<COFINSNT>
+							<CST>07</CST>
+						</COFINSNT>
+					</COFINS>
+				</imposto>
+			</det>
+			<det nItem="2">
+				<prod>
+					<cProd>71</cProd>
+					<cEAN/>
+					<xProd>Lixeira de Cambio 200pecas</xProd>
+					<NCM>48194000</NCM>
+					<CFOP>5102</CFOP>
+					<uCom>Pcte</uCom>
+					<qCom>1.0000</qCom>
+					<vUnCom>87.9000000000</vUnCom>
+					<vProd>87.90</vProd>
+					<cEANTrib/>
+					<uTrib>Pcte</uTrib>
+					<qTrib>1.0000</qTrib>
+					<vUnTrib>87.9000000000</vUnTrib>
+					<indTot>1</indTot>
+				</prod>
+				<imposto>
+					<ICMS>
+						<ICMSSN102>
+							<orig>0</orig>
+							<CSOSN>400</CSOSN>
+						</ICMSSN102>
+					</ICMS>
+					<IPI>
+						<cEnq>0</cEnq>
+						<IPINT>
+							<CST>52</CST>
+						</IPINT>
+					</IPI>
+					<PIS>
+						<PISNT>
+							<CST>07</CST>
+						</PISNT>
+					</PIS>
+					<COFINS>
+						<COFINSNT>
+							<CST>07</CST>
+						</COFINSNT>
+					</COFINS>
+				</imposto>
+			</det>
+			<total>
+				<ICMSTot>
+					<vBC>0.00</vBC>
+					<vICMS>0.00</vICMS>
+					<vBCST>0.00</vBCST>
+					<vST>0.00</vST>
+					<vProd>197.80</vProd>
+					<vFrete>0.00</vFrete>
+					<vSeg>0.00</vSeg>
+					<vDesc>0.00</vDesc>
+					<vII>0.00</vII>
+					<vIPI>0.00</vIPI>
+					<vPIS>0.00</vPIS>
+					<vCOFINS>0.00</vCOFINS>
+					<vOutro>0.00</vOutro>
+					<vNF>197.80</vNF>
+				</ICMSTot>
+			</total>
+			<transp>
+				<modFrete>0</modFrete>
+				<transporta>
+					<CNPJ>44914992000138</CNPJ>
+					<xNome>Rodonaves Trans e Encomenda LTDA</xNome>
+					<IE>582249216111</IE>
+					<xEnder>Dr Labienio Teixeira de Mendonca 100 Distrito Industrial</xEnder>
+					<xMun>Sao Jose do Rio Preto</xMun>
+					<UF>SP</UF>
+				</transporta>
+				<vol>
+					<qVol>1</qVol>
+					<esp>caixa</esp>
+					<pesoL>4.000</pesoL>
+					<pesoB>4.000</pesoB>
+				</vol>
+			</transp>
+			<cobr>
+				<fat>
+					<nFat>5549</nFat>
+				</fat>
+			</cobr>
+			<infAdic>
+				<infCpl>Essa empresa e opitante pelo simples nacional.</infCpl>
+			</infAdic>
+		</infNFe>
+		<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+			<SignedInfo>
+				<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+				<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+				<Reference URI="#NFe35140410450992000102550010000017561192837465">
+					<Transforms>
+						<Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+						<Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+					</Transforms>
+					<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+					<DigestValue>Lh4t9rrzosdHhp4Tv4MIrrrBRxY=</DigestValue>
+				</Reference>
+			</SignedInfo>
+			<SignatureValue>pFRWPq1YsemDan/p2LDRObu4CqYJFSk/iDQ1rx0R1af66Xp/EJlddDGau+IdWbRWPSEgsAlCYcbHmajt2XT7COg+xU7uuf9fGLveTgW80MQjfnx0ULW6fBiwe18B2vTQVmCcgiFF/Z3K2RT+DMmF1ZKlUMTu8+Fk12QFSLeJ+7Uckzfk0fJfl0/AtjuztNvE7PEYIoRXsHW/GlR4p/YJxsCt8U9AMmbrbbXXOLdKd9pDQZWx8wdzyJs8bfyLzPFoUJEigx0AfjyJCtQycpeb749XCnxVzr9vuGh0kHjXmavlT3xRPLXW0ce073MKlkutwTvolfmVuVgPhw+JpkjTDg==</SignatureValue>
+			<KeyInfo>
+				<X509Data>
+					<X509Certificate>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</X509Certificate>
+				</X509Data>
+			</KeyInfo>
+		</Signature>
+	</NFe>
+</enviNFe>

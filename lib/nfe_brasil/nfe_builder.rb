@@ -211,15 +211,15 @@ module	NfeBrasil
 		def add_emit(xml)
 			xml.emit { #inofrmações do Emitente da nota fiscal
 				xml.CNPJ @data[:emitente][:cnpj]
-				xml.xNome I18n.transliterate(@data[:emitente][:razaoSocial])
+				xml.xNome I18n.transliterate(@data[:emitente][:razaoSocial]).gsub(/\s+/, " ").strip
 				xml.xFant @data[:emitente][:nomeFantasia]
 				xml.enderEmit {
-					xml.xLgr I18n.transliterate(@data[:emitente][:endereco][:logradouro])
+					xml.xLgr I18n.transliterate(@data[:emitente][:endereco][:logradouro]).gsub(/\s+/, " ").strip
 					xml.nro @data[:emitente][:endereco][:numero]
 					xml.xCpl @data[:emitente][:endereco][:complemento]
-					xml.xBairro I18n.transliterate(@data[:emitente][:endereco][:bairro])
+					xml.xBairro I18n.transliterate(@data[:emitente][:endereco][:bairro]).gsub(/\s+/, " ").strip
 					xml.cMun @data[:emitente][:endereco][:codigoMunicipio]
-					xml.xMun I18n.transliterate(@data[:emitente][:endereco][:municipio])
+					xml.xMun I18n.transliterate(@data[:emitente][:endereco][:municipio]).gsub(/\s+/, " ").strip
 					xml.UF @data[:emitente][:endereco][:uf]
 					xml.CEP @data[:emitente][:endereco][:cep]
 					xml.cPais @data[:emitente][:endereco][:codigoPais]
@@ -235,14 +235,14 @@ module	NfeBrasil
 			xml.dest { #Informações do destinatário da NF eletrônica.
 				#Escolha entre os dois nós a seguir.
 				@data[:destinatario][:cnpj] != '' ? (xml.CNPJ @data[:destinatario][:cnpj]) : (xml.CPF @data[:destinatario][:cpf])
-				xml.xNome I18n.transliterate(@data[:destinatario][:razaoSocial])
+				xml.xNome I18n.transliterate(@data[:destinatario][:razaoSocial]).gsub(/\s+/, " ").strip
 				xml.enderDest {
-					xml.xLgr I18n.transliterate(@data[:destinatario][:endereco][:logradouro])
+					xml.xLgr I18n.transliterate(@data[:destinatario][:endereco][:logradouro]).gsub(/\s+/, " ").strip
 					xml.nro @data[:destinatario][:endereco][:numero]
 					# xml.xCpl @data[:destinatario][:endereco][:complemento]
-					xml.xBairro I18n.transliterate(@data[:destinatario][:endereco][:bairro])
+					xml.xBairro I18n.transliterate(@data[:destinatario][:endereco][:bairro]).gsub(/\s+/, " ").strip
 					xml.cMun @data[:destinatario][:endereco][:codigoMunicipio]
-					xml.xMun I18n.transliterate(@data[:destinatario][:endereco][:municipio])
+					xml.xMun I18n.transliterate(@data[:destinatario][:endereco][:municipio]).gsub(/\s+/, " ").strip
 					xml.UF @data[:destinatario][:endereco][:uf]
 					xml.CEP @data[:destinatario][:endereco][:cep]
 					xml.cPais @data[:destinatario][:endereco][:codigoPais]
@@ -282,20 +282,20 @@ module	NfeBrasil
 		def add_det(xml, item, nItem)
 			xml.det(nItem: nItem) {
 				xml.prod {
-					xml.cProd I18n.transliterate(item[:produto][:cProd])
+					xml.cProd I18n.transliterate(item[:produto][:cProd]).gsub(/\s+/, " ").strip
 					xml.cEAN
-					xml.xProd I18n.transliterate(item[:produto][:xProd])
-					xml.NCM I18n.transliterate(item[:produto][:NCM])
-					xml.CFOP I18n.transliterate(item[:produto][:CFOP])
-					xml.uCom I18n.transliterate(item[:produto][:uCom])
-					xml.qCom I18n.transliterate(item[:produto][:qCom])
-					xml.vUnCom I18n.transliterate(item[:produto][:vUnCom])
-					xml.vProd I18n.transliterate(item[:produto][:vProd])
+					xml.xProd I18n.transliterate(item[:produto][:xProd]).gsub(/\s+/, " ").strip
+					xml.NCM I18n.transliterate(item[:produto][:NCM]).gsub(/\s+/, " ").strip
+					xml.CFOP I18n.transliterate(item[:produto][:CFOP]).gsub(/\s+/, " ").strip
+					xml.uCom I18n.transliterate(item[:produto][:uCom]).gsub(/\s+/, " ").strip
+					xml.qCom I18n.transliterate(item[:produto][:qCom]).gsub(/\s+/, " ").strip
+					xml.vUnCom I18n.transliterate(item[:produto][:vUnCom]).gsub(/\s+/, " ").strip
+					xml.vProd I18n.transliterate(item[:produto][:vProd]).gsub(/\s+/, " ").strip
 					xml.cEANTrib
-					xml.uTrib I18n.transliterate(item[:produto][:uTrib])
-					xml.qTrib I18n.transliterate(item[:produto][:qTrib])
-					xml.vUnTrib I18n.transliterate(item[:produto][:vUnTrib])
-					xml.indTot I18n.transliterate(item[:produto][:indTot])
+					xml.uTrib I18n.transliterate(item[:produto][:uTrib]).gsub(/\s+/, " ").strip
+					xml.qTrib I18n.transliterate(item[:produto][:qTrib]).gsub(/\s+/, " ").strip
+					xml.vUnTrib I18n.transliterate(item[:produto][:vUnTrib]).gsub(/\s+/, " ").strip
+					xml.indTot I18n.transliterate(item[:produto][:indTot]).gsub(/\s+/, " ").strip
 				}
 				xml.imposto {
 					xml.ICMS {
@@ -352,17 +352,17 @@ module	NfeBrasil
 				xml.transporta {
 					#Escolha entre um dos dois campos abaixo.
 					xml.CNPJ @data[:transporte][:transporta][:cnpj]
-					xml.xNome I18n.transliterate(@data[:transporte][:transporta][:razaoSocial])
-					xml.IE I18n.transliterate(@data[:transporte][:transporta][:ie])
-					xml.xEnder I18n.transliterate(@data[:transporte][:transporta][:endereco])
-					xml.xMun I18n.transliterate(@data[:transporte][:transporta][:municipio])
-					xml.UF I18n.transliterate(@data[:transporte][:transporta][:uf])
+					xml.xNome I18n.transliterate(@data[:transporte][:transporta][:razaoSocial]).gsub(/\s+/, " ").strip
+					xml.IE I18n.transliterate(@data[:transporte][:transporta][:ie]).gsub(/\s+/, " ").strip
+					xml.xEnder I18n.transliterate(@data[:transporte][:transporta][:endereco]).gsub(/\s+/, " ").strip
+					xml.xMun I18n.transliterate(@data[:transporte][:transporta][:municipio]).gsub(/\s+/, " ").strip
+					xml.UF I18n.transliterate(@data[:transporte][:transporta][:uf]).gsub(/\s+/, " ").strip
 				}
 				xml.vol { #Informações de Volumes a serem transportados.
-					xml.qVol I18n.transliterate(@data[:transporte][:volumes][:quantidade])
-					xml.esp I18n.transliterate(@data[:transporte][:volumes][:especie])
-					xml.pesoL I18n.transliterate(@data[:transporte][:volumes][:pesoLiquido])
-					xml.pesoB I18n.transliterate(@data[:transporte][:volumes][:pesoBruto])
+					xml.qVol I18n.transliterate(@data[:transporte][:volumes][:quantidade]).gsub(/\s+/, " ").strip
+					xml.esp I18n.transliterate(@data[:transporte][:volumes][:especie]).gsub(/\s+/, " ").strip
+					xml.pesoL I18n.transliterate(@data[:transporte][:volumes][:pesoLiquido]).gsub(/\s+/, " ").strip
+					xml.pesoB I18n.transliterate(@data[:transporte][:volumes][:pesoBruto]).gsub(/\s+/, " ").strip
 				}
 			}
 		end
@@ -386,7 +386,7 @@ module	NfeBrasil
 		def add_infAdic(xml)
 			xml.infAdic { #Informações adicionais da nota fiscal.
 				# xml.infAdFisco(@data[:infoAdicional][:infAdFisco]) if @data[:infoAdicional][:infAdFisco] != ""
-				xml.infCpl I18n.transliterate(@data[:infoAdicional][:infCpl])
+				xml.infCpl I18n.transliterate(@data[:infoAdicional][:infCpl]).gsub(/\s+/, " ").strip
 			}			
 		end
 
@@ -414,8 +414,8 @@ module	NfeBrasil
 			puts "=============================="
 			puts "=============================="
 
-			# xml_digest = Base64.encode64(OpenSSL::Digest::SHA1.digest(xml_canon)).strip
-			xml_digest = OpenSSL::Digest::SHA1.base64digest(xml_canon)
+			xml_digest = Base64.encode64(OpenSSL::Digest::SHA1.digest(xml_canon)).strip
+			# xml_digest = OpenSSL::Digest::SHA1.base64digest(xml_canon)
 
 
 			# 2. Add Signature Node
@@ -499,7 +499,7 @@ module	NfeBrasil
 			puts signature_hash
 			puts "=============================="
 
-			signature_value = Base64.encode64(signature_hash).gsub("\n", '').strip
+			signature_value = Base64.encode64(signature_hash).gsub(/\s+/, "").gsub(/\n/, "").strip
 			puts "=============================="
 			puts "Signature hash com Base Encode 64"
 			puts "=============================="
@@ -542,13 +542,13 @@ module	NfeBrasil
 			puts "=============================="
 			puts "XML enviado para o Gateway"
 			puts "=============================="
-			puts xml.canonicalize(Nokogiri::XML::XML_C14N_1_0)
+			puts xml.xpath("//xmlns:enviNFe").to_s.gsub(/>\s+</, "><").gsub(/\n/, "")
 			puts "=============================="
 			puts "=============================="
 
 			# Return XML
-			xml.canonicalize(Nokogiri::XML::XML_C14N_1_0)
-			# xml.xpath("//xmlns:enviNFe").to_s.gsub(/>\s+</, "><").gsub(/\n/, '')
+			# xml.canonicalize(Nokogiri::XML::XML_C14N_1_0)
+			xml.xpath("//xmlns:enviNFe").to_s.gsub(/>\s+</, "><").gsub(/\n/, "")
 		end
 
 		def access_key_generate
