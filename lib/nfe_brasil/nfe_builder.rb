@@ -405,7 +405,7 @@ module	NfeBrasil
 
 			# 1. Digest Hash for infNFe
 			xml_infNFe = xml.xpath("//xmlns:infNFe")
-			xml_canon = Nokogiri::XML(xml_infNFe.to_s, &:noblanks).canonicalize(Nokogiri::XML::XML_C14N_1_0)
+			xml_canon = Nokogiri::XML(xml_infNFe.to_s, &:noblanks).canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
 			# xml_canon = xml_infNFe.to_s.gsub(/>\s+</, "><").gsub(/\n/, '')
 			puts "=============================="
 			puts "Nós InfNFe que será usado para a geração do digest"
@@ -483,7 +483,7 @@ module	NfeBrasil
 			puts signature_info.to_s
 			puts "=============================="
 			puts "=============================="
-			sign_canon = signature_info.canonicalize(Nokogiri::XML::XML_C14N_1_0)
+			sign_canon = signature_info.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
 			# sign_canon = signature_info.to_s.gsub(/>\s+</, "><").gsub(/\n/, '')
 			puts "=============================="
 			puts "Nós SignatureInfo que é usado para assinar a nota"
@@ -547,8 +547,8 @@ module	NfeBrasil
 			puts "=============================="
 
 			# Return XML
-			# xml.canonicalize(Nokogiri::XML::XML_C14N_1_0)
-			xml.xpath("//xmlns:enviNFe").to_s.gsub(/>\s+</, "><").gsub(/\n/, "")
+			xml.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			#xml.xpath("//xmlns:enviNFe").to_s.gsub(/>\s+</, "><").gsub(/\n/, "")
 		end
 
 		def access_key_generate

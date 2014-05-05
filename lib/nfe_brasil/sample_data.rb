@@ -22,7 +22,7 @@ module NfeBrasil
 				razaoSocial: 'Nilma Carla Vieira ME', #Razão social da Empresa Emissora.
 				nomeFantasia: 'Newbrind', #Noma fantasia da empresa emissora da NF.
 				endereco: {
-					logradouro: 'Rua Antônio Carlos Oliveira Bottas',
+					logradouro: 'Rua Antonio Carlos Oliveira Bottas',
 					numero: '1820',
 					complemento: 'c15',
 					bairro: 'Villa Borguese III',
@@ -43,7 +43,7 @@ module NfeBrasil
 				cpf: '',
 				razaoSocial: 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
 				endereco: {
-					logradouro: 'R VOLUNATARIOS DA FRANÇA',
+					logradouro: 'R VOLUNATARIOS DA FRANCA',
 					numero: '1575',
 					complemento: '',
 					bairro: 'CENTRO',
@@ -63,7 +63,7 @@ module NfeBrasil
 				det1: {
 					produto: { #Informações sobre o produto ou serviço.
 						cProd: "65", #Código do Produto ou Serviço - Preencher com CFOP caso se trate de itens não relacionados a mercadoria ou produtos e que o contribuinte não possua numeração própria ex: 'CFOP9999'
-						xProd: "Capa de lixa 200 pç",
+						xProd: "Capa de lixa 200 unidades",
 						NCM: "48196000",
 						CFOP: "5102", #Código CFOP: 5102 - Venda de mercadorias adquirida ou recebida de terceiros.
 						uCom: "PCTE", #Unidade Comercial.
@@ -104,14 +104,14 @@ module NfeBrasil
 				det2: {
 					produto: { #Informações sobre o produto ou serviço.
 						cProd: "71", #Código do Produto ou Serviço - Preencher com CFOP caso se trate de itens não relacionados a mercadoria ou produtos e que o contribuinte não possua numeração própria ex: 'CFOP9999'
-						xProd: "Lixeira de Cambio 200peças",
+						xProd: "Lixeira de Cambio 200 unidades",
 						NCM: "48194000",
 						CFOP: "5102", #Código CFOP: 5102 - Venda de mercadorias adquirida ou recebida de terceiros.
-						uCom: "Pcte", #Unidade Comercial.
+						uCom: "PCTE", #Unidade Comercial.
 						qCom: "1.0000", #Quantidade Comercial.
 						vUnCom: "87.9000000000", #Valor Unitário de Comercialização - Meramente informativo.
 						vProd: "87.90", #Valor total dos produtos.
-						uTrib: "Pcte", #Unidade Tributável.
+						uTrib: "PCTE", #Unidade Tributável.
 						qTrib: "1.0000", #Quantidade tributável - informar a quantidade de tributação do produto.
 						vUnTrib: "87.9000000000", #Valor unitário de tributação.
 						indTot: "1" #Indica se o campo vProd desse item compõe o valor total da nota: 0 - Não compõe, 1 - Compõe.
@@ -190,7 +190,7 @@ module NfeBrasil
 			},
 			infoAdicional: {
 				infAdFisco: "", #Informações adicionais de interesse do fisco.
-				infCpl: "Essa empresa é opitante pelo simples nacional." #Informações adicionais de interesse do contribuinte.
+				infCpl: "Essa empresa e opitante pelo simples nacional" #Informações adicionais de interesse do contribuinte.
 
 
 			}
